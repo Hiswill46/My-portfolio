@@ -137,24 +137,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      jump.current = (top) => window.scrollTo(0, top);
-      return;
-    }
-    let lockUntil = 0;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
 
     function animateTo(top) {
-      const now = performance.now();
-      lockUntil = now + 520;
+      if (reduced) {
+        window.scrollTo(0, top);
+        return;
+      }
       const start = window.scrollY;
       const dist = top - start;
       if (Math.abs(dist) < 2) {
         window.scrollTo(0, top);
         return;
       }
-      const dur = 420;
-      const t0 = now;
+      const dur = 520;
+      const t0 = performance.now();
       cancelAnimationFrame(frame);
       const step = (t) => {
         const p = Math.min(1, (t - t0) / dur);
@@ -167,48 +165,25 @@ export default function App() {
     }
     jump.current = animateTo;
 
-    function goPanel(dir) {
-      if (performance.now() < lockUntil) return;
-      const panels = panelTops();
-      const y = window.scrollY + 2;
-      let index = 0;
-      panels.forEach((top, idx) => {
-        if (top <= y) index = idx;
+    const nodes = () => Array.from(document.querySelectorAll(".panel"));
+    function stack() {
+      if (reduced) return;
+      const tops = panelTops();
+      const y = window.scrollY;
+      nodes().forEach((el, i) => {
+        const next = tops[i + 1];
+        const span = next == null ? 1 : Math.max(1, next - tops[i]);
+        const p = next == null ? 0 : Math.min(1, Math.max(0, (y - tops[i]) / span));
+        el.style.setProperty("--p", p.toFixed(3));
       });
-      const next = Math.max(0, Math.min(panels.length - 1, index + dir));
-      if (next === index) return;
-      animateTo(panels[next]);
     }
-
-    function onWheel(e) {
-      e.preventDefault();
-      if (Math.abs(e.deltaY) < 18) return;
-      goPanel(e.deltaY > 0 ? 1 : -1);
-    }
-
-    let startY = 0;
-    function onTouchStart(e) {
-      startY = e.touches[0]?.clientY ?? 0;
-    }
-    function onTouchMove(e) {
-      e.preventDefault();
-    }
-    function onTouchEnd(e) {
-      const dy = startY - (e.changedTouches[0]?.clientY ?? startY);
-      if (Math.abs(dy) < 48) return;
-      goPanel(dy > 0 ? 1 : -1);
-    }
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    stack();
+    window.addEventListener("scroll", stack, { passive: true });
+    window.addEventListener("resize", stack);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("scroll", stack);
+      window.removeEventListener("resize", stack);
     };
   }, []);
 

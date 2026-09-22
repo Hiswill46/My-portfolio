@@ -112,7 +112,7 @@ export default function App() {
 
   useEffect(() => {
     const nums = document.querySelectorAll(".num");
-    const seen = new WeakSet<Element>();
+    const seen = new WeakSet();
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

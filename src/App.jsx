@@ -121,49 +121,37 @@ export default function App() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const panels = () => Array.from(document.querySelectorAll(".panel"));
-    let locked = false;
-    let acc = 0;
-    let accTimer = 0;
+    let busyUntil = 0;
+    let frame = 0;
 
     function goPanel(dir) {
-      if (locked) return;
-      const list = panels();
+      if (performance.now() < busyUntil) return;
+      const count = document.querySelectorAll(".panel").length;
       const h = window.innerHeight || 1;
       const y = window.scrollY;
-      const next =
-        dir > 0
-          ? Math.min(list.length - 1, Math.floor(y / h + 0.05) + 1)
-          : Math.max(0, Math.ceil(y / h - 0.05) - 1);
-      const top = Math.round(next * h);
+      const index = Math.round(y / h);
+      const next = Math.max(0, Math.min(count - 1, index + dir));
+      const top = next * h;
       if (Math.abs(top - y) < 2) return;
-      locked = true;
       const start = y;
       const dist = top - start;
-      const dur = 480;
+      const dur = 460;
       const t0 = performance.now();
-      const frame = (now) => {
+      busyUntil = t0 + dur + 700;
+      cancelAnimationFrame(frame);
+      const step = (now) => {
         const p = Math.min(1, (now - t0) / dur);
         const eased = 1 - (1 - p) * (1 - p);
         window.scrollTo(0, Math.round(start + dist * eased));
-        if (p < 1) requestAnimationFrame(frame);
-        else locked = false;
+        if (p < 1) frame = requestAnimationFrame(step);
       };
-      requestAnimationFrame(frame);
+      frame = requestAnimationFrame(step);
     }
 
     function onWheel(e) {
       e.preventDefault();
-      if (locked) return;
-      acc += e.deltaY;
-      window.clearTimeout(accTimer);
-      accTimer = window.setTimeout(() => {
-        acc = 0;
-      }, 140);
-      if (Math.abs(acc) < 36) return;
-      const dir = acc > 0 ? 1 : -1;
-      acc = 0;
-      goPanel(dir);
+      if (Math.abs(e.deltaY) < 16) return;
+      goPanel(e.deltaY > 0 ? 1 : -1);
     }
 
     let startY = 0;
@@ -174,8 +162,7 @@ export default function App() {
       e.preventDefault();
     }
     function onTouchEnd(e) {
-      const endY = e.changedTouches[0]?.clientY ?? startY;
-      const dy = startY - endY;
+      const dy = startY - (e.changedTouches[0]?.clientY ?? startY);
       if (Math.abs(dy) < 48) return;
       goPanel(dy > 0 ? 1 : -1);
     }
@@ -185,6 +172,7 @@ export default function App() {
     window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);

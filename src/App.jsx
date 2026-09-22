@@ -79,18 +79,19 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const panels = document.querySelectorAll(".panel");
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const vis = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (vis?.target.id) setSection(vis.target.id);
-      },
-      { threshold: [0.35, 0.6] },
-    );
-    panels.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
+    const ids = NAV.map(([id]) => id);
+    function sync() {
+      const h = window.innerHeight || 1;
+      const i = Math.max(0, Math.min(ids.length - 1, Math.round(window.scrollY / h)));
+      setSection((cur) => (cur === ids[i] ? cur : ids[i]));
+    }
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    return () => {
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+    };
   }, []);
 
   useEffect(() => {

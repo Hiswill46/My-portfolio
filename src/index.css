@@ -451,9 +451,11 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   .work-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .hero-visual { height: auto; order: -1; }
   .avatar-ring { width: 168px; height: 168px; }
+  .hero-grid > div:first-child { text-align: center; }
+  .eyebrow-line { justify-content: center; }
   .hero-name { font-size: 32px; }
-  .hero-desc { font-size: 14px; margin-top: 12px; }
-  .hero-actions { margin-top: 18px; }
+  .hero-desc { font-size: 14px; margin: 12px auto 0; }
+  .hero-actions { margin-top: 18px; justify-content: center; }
   .about-grid h2, .skills-head h2, .work-head h2 { font-size: 26px; }
   .contact-inner h2 { font-size: 30px; }
   .stat-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 18px; }

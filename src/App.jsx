@@ -3,17 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 const ROLES = ["DESIGNER", "ENGINEER", "BUILDER", "STRATEGIST"];
 
 const WORKS = [
-  { title: "SPV Bond", tag: "Corporate · Dubai", copy: "SPV formation, structuring and offshore advisory site for Downtown Dubai.", href: "https://spv-bondproject.com" },
-  { title: "AMAL Projects", tag: "PMO · Muscat", copy: "Oman PMO and consulting brand system — navy, cyan, growth-first narrative." },
-  { title: "CX Assets", tag: "Fintech dashboard", copy: "Multi-locale private banking UI with live portfolio cards and account rails.", href: "https://cxassets-five.vercel.app" },
-  { title: "KoboLoop", tag: "Product", copy: "Full-stack TypeScript product loop — app + drizzle backend on Vercel.", href: "https://koboloop.vercel.app" },
-  { title: "SeeCapital", tag: "Capital markets", copy: "High-density capital product experience with a deep JavaScript surface." },
-  { title: "ntelitix.io", tag: "Front-end / UI", copy: "Product marketing and interface work for a fast-moving tech brand." },
+  { title: "SPV Bond", tag: "Corporate \u00b7 Abu Dhabi", copy: "SPV formation, structuring and offshore advisory.", href: "https://www.spv-bondproject.com/" },
+  { title: "KoboLoop", tag: "Savings groups", copy: "Join a group, contribute, and collect on schedule.", href: "https://koboloop-drizzle.vercel.app/" },
+  { title: "CX Assets", tag: "Private banking", copy: "Investment and banking surface. This is the live deploy.", href: "https://cxassets.vercel.app/" },
+  { title: "SeeCapital", tag: "Capital dashboard", copy: "Sign-in for the capital dashboard.", href: "https://seecapital.vercel.app/" },
 ];
 
 const SERVICES = [
   { title: "Development", copy: "Next.js and TypeScript systems that ship: corporate sites, dashboards, and product surfaces with production polish." },
-  { title: "UI/UX Design", copy: "Interfaces with Gulf-corporate restraint — clear hierarchy, motion that earns its keep, zero gimmicks." },
+  { title: "UI/UX Design", copy: "Interfaces with Gulf-corporate restraint \u2014 clear hierarchy, motion that earns its keep, zero gimmicks." },
   { title: "Product Branding", copy: "Wordmarks, palettes, OG cards and favicon systems handed off as atomic brand kits." },
   { title: "Motion Design", copy: "Scroll, dock, aurora and micro-interaction languages that make a site feel alive without getting in the way." },
 ];
@@ -52,7 +50,7 @@ export default function App() {
   function go(id) { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); }
   function submit(e) {
     e.preventDefault();
-    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} <${form.email}>`);
+    const body = encodeURIComponent(`${form.message}\n\n\u2014 ${form.name} <${form.email}>`);
     window.location.href = `mailto:hello@hiswill.dev?subject=${encodeURIComponent("Work with Hiswill")}&body=${body}`;
     setSent(true);
   }
@@ -82,7 +80,7 @@ export default function App() {
         <div className="stack">
           <p className="h-section">ABOUT ME.</p>
           <h2 className="h-lead">I'm a freelance front-end developer with over 5 years of experience.</h2>
-          <p className="muted">Based between Port Harcourt and the Gulf corridor. I build Next.js brand sites and product dashboards — SPV structuring firms in Downtown Dubai, PMOs in Muscat, private-banking UIs, and full-stack TypeScript apps. The brief is always the same: look considered, move with intent, ship.</p>
+          <p className="muted">Based between Port Harcourt and the Gulf corridor. I build Next.js brand sites and product dashboards \u2014 SPV structuring, private-banking UIs, and full-stack TypeScript apps.</p>
           <div className="stats">
             <div className="stat"><b>5+</b><span>Years of Experience</span></div>
             <div className="stat"><b>22+</b><span>Projects Completed</span></div>
@@ -97,37 +95,40 @@ export default function App() {
       <section id="services" className="section right">
         <div className="stack">
           <p className="h-section">WHAT I DO.</p>
-          <h2 className="h-lead">Four crafts, one standard — the surface has to feel inevitable.</h2>
+          <h2 className="h-lead">Four crafts, one standard \u2014 the surface has to feel inevitable.</h2>
           <div className="services">
             {SERVICES.map((s) => (
               <article className="svc" key={s.title}>
                 <div><h3>{s.title}</h3><p>{s.copy}</p></div>
                 <a className="more" href="#work">Learn More</a>
-                <span className="ico" aria-hidden="true">↗</span>
+                <span className="ico" aria-hidden="true">\u2197</span>
               </article>
             ))}
           </div>
         </div>
       </section>
-      <section id="work" className="section right">
-        <div className="stack wide">
+      <section id="work" className="section" style={{ justifyContent: "center" }}>
+        <div className="stack wide" style={{ width: "min(1040px, 100%)", maxWidth: 1040 }}>
           <div className="works-head">
             <div>
               <p className="h-section">MY LATEST</p>
               <h2 className="h-lead" style={{ marginBottom: 8 }}>WORKS.</h2>
-              <p className="muted">Selected product, brand and interface work — live where public, discreet where it has to be.</p>
+              <p className="muted">Each card is a live view of the deploy. Click through to open it.</p>
             </div>
-            <a className="pill ghost" href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">View all Projects</a>
           </div>
           <div className="grid">
-            {WORKS.map((w) => {
-              const inner = (<><span className="tag">{w.tag}</span><h3>{w.title}</h3><p>{w.copy}</p></>);
-              return w.href ? (
-                <a className="card" key={w.title} href={w.href} target="_blank" rel="noreferrer">{inner}</a>
-              ) : (
-                <article className="card" key={w.title}>{inner}</article>
-              );
-            })}
+            {WORKS.map((w) => (
+              <a className="card" key={w.title} href={w.href} target="_blank" rel="noreferrer" style={{ padding: 0, minHeight: 0, justifyContent: "flex-start" }}>
+                <div style={{ height: 176, overflow: "hidden", pointerEvents: "none", background: "#0e061c" }}>
+                  <iframe title={w.title} src={w.href} tabIndex={-1} loading="lazy" style={{ width: 1280, height: 800, border: 0, transform: "scale(0.32)", transformOrigin: "top left" }} />
+                </div>
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <span className="tag">{w.tag}</span>
+                  <h3>{w.title}</h3>
+                  <p>{w.copy}</p>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -139,10 +140,10 @@ export default function App() {
             <input required placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             <textarea required placeholder="What should we build?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-            <button className="pill" type="submit" style={{ justifySelf: "start" }}>{sent ? "Opening mail…" : "Send Message"}</button>
+            <button className="pill" type="submit" style={{ justifySelf: "start" }}>{sent ? "Opening mail\u2026" : "Send Message"}</button>
           </form>
           <p className="muted" style={{ marginTop: 28, fontSize: 14 }}>
-            © {year} Hiswill Iroegbulam · <a href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">GitHub</a> · <a href="https://x.com/iroegbulam_e" target="_blank" rel="noreferrer">X</a>
+            \u00a9 {year} Hiswill Iroegbulam \u00b7 <a href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">GitHub</a> \u00b7 <a href="https://x.com/iroegbulam_e" target="_blank" rel="noreferrer">X</a>
           </p>
         </div>
       </section>

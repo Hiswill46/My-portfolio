@@ -71,7 +71,7 @@ export default function App() {
   useEffect(() => {
     const glow = document.getElementById("glow");
     if (!glow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const move = (e: MouseEvent) => {
+    const move = (e) => {
       glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
     };
     window.addEventListener("mousemove", move, { passive: true });

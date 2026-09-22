@@ -11,7 +11,7 @@
   --accent3: #ff6fa5;
   --grad: linear-gradient(120deg, var(--accent1), var(--accent2));
 }
-html { scroll-behavior: smooth; overflow-x: clip; }
+html { scroll-behavior: smooth; overflow-x: clip; scroll-snap-type: y mandatory; }
 body {
   margin: 0;
   background: var(--bg);
@@ -176,6 +176,9 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   top: 0;
   height: 100dvh;
   min-height: 100dvh;
+  max-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   width: 100%;
   display: flex;
   align-items: center;
@@ -350,8 +353,10 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   font-size: 14px;
   font-weight: 500;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   color: var(--text);
+  transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 .skill-pill::before {
   content: "";
@@ -378,9 +383,12 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   display: flex;
   flex-direction: column;
   color: inherit;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
-.work-card:hover { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); border-color: rgba(124, 92, 252, 0.45); }
+.work-shot { transition: transform 0.55s ease; }
+.work-card:hover .work-shot { transform: scale(1.08); }
+.work-card:hover { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); border-color: rgba(124, 92, 252, 0.45); transform: translateY(-4px); }
 .work-shot { width: 100%; height: 16vh; min-height: 92px; object-fit: cover; object-position: top center; display: block; }
 .work-body { padding: 12px 16px 14px; }
 .work-kicker { font-size: 12.5px; font-weight: 600; color: var(--accent2); }

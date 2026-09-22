@@ -3,10 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 const ROLES = ["DESIGNER", "ENGINEER", "BUILDER", "STRATEGIST"];
 
 const WORKS = [
-  { title: "SPV Bond", tag: "Corporate \u00b7 Abu Dhabi", copy: "SPV formation, structuring and offshore advisory.", href: "https://www.spv-bondproject.com/" },
-  { title: "KoboLoop", tag: "Savings groups", copy: "Join a group, contribute, and collect on schedule.", href: "https://koboloop-drizzle.vercel.app/" },
-  { title: "CX Assets", tag: "Private banking", copy: "Investment and banking surface. This is the live deploy.", href: "https://cxassets.vercel.app/" },
-  { title: "SeeCapital", tag: "Capital dashboard", copy: "Sign-in for the capital dashboard.", href: "https://seecapital.vercel.app/" },
+  { title: "SPV Bond", tag: "Corporate \u00b7 Dubai", copy: "SPV formation, structuring and offshore advisory.", href: "https://www.spv-bondproject.com/", shot: "https://image.thum.io/get/width/1000/crop/620/https://www.spv-bondproject.com/" },
+  { title: "KoboLoop", tag: "Savings groups", copy: "Join a group, contribute, and collect on schedule.", href: "https://koboloop-drizzle.vercel.app/", shot: "https://image.thum.io/get/width/1000/crop/620/https://koboloop-drizzle.vercel.app/" },
+  { title: "CX Assets", tag: "Private banking", copy: "Investment and banking surface. This is the live deploy.", href: "https://cxassets.vercel.app/", shot: "https://image.thum.io/get/width/1000/crop/620/https://cxassets.vercel.app/" },
+  { title: "SeeCapital", tag: "Capital dashboard", copy: "Sign-in for the capital dashboard.", href: "https://seecapital.vercel.app/", shot: "https://image.thum.io/get/width/1000/crop/620/https://seecapital.vercel.app/" },
 ];
 
 const SERVICES = [
@@ -84,7 +84,7 @@ export default function App() {
           <div className="stats">
             <div className="stat"><b>5+</b><span>Years of Experience</span></div>
             <div className="stat"><b>22+</b><span>Projects Completed</span></div>
-            <div className="stat"><b>1k+</b><span>Satisfied Clients*</span></div>
+            <div className="stat"><b>4</b><span>Live Products</span></div>
           </div>
           <div className="actions">
             <a className="pill sm" href="#contact">Contact me</a>
@@ -113,14 +113,14 @@ export default function App() {
             <div>
               <p className="h-section">MY LATEST</p>
               <h2 className="h-lead" style={{ marginBottom: 8 }}>WORKS.</h2>
-              <p className="muted">Each card is a live view of the deploy. Click through to open it.</p>
+              <p className="muted">Screenshots of the live deploys. Click a card to open it.</p>
             </div>
           </div>
           <div className="grid">
             {WORKS.map((w) => (
               <a className="card" key={w.title} href={w.href} target="_blank" rel="noreferrer" style={{ padding: 0, minHeight: 0, justifyContent: "flex-start" }}>
-                <div style={{ height: 176, overflow: "hidden", pointerEvents: "none", background: "#0e061c" }}>
-                  <iframe title={w.title} src={w.href} tabIndex={-1} loading="lazy" style={{ width: 1280, height: 800, border: 0, transform: "scale(0.32)", transformOrigin: "top left" }} />
+                <div style={{ height: 210, overflow: "hidden", background: "#0e061c", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                  <img src={w.shot} alt={`${w.title} preview`} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }} />
                 </div>
                 <div style={{ padding: "16px 18px 18px" }}>
                   <span className="tag">{w.tag}</span>

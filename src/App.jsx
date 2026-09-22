@@ -119,7 +119,75 @@ export default function App() {
     return () => obs.disconnect();
   }, []);
 
-  function go(id: string) {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const panels = () => Array.from(document.querySelectorAll(".panel"));
+    let locked = false;
+    let acc = 0;
+    let accTimer = 0;
+
+    function indexAt(y) {
+      const list = panels();
+      let i = 0;
+      list.forEach((el, idx) => {
+        if (el.offsetTop <= y + 8) i = idx;
+      });
+      return { list, i };
+    }
+
+    function goPanel(dir) {
+      if (locked) return;
+      const { list, i } = indexAt(window.scrollY);
+      const next = Math.max(0, Math.min(list.length - 1, i + dir));
+      if (next === i) return;
+      locked = true;
+      window.scrollTo({ top: list[next].offsetTop, behavior: "smooth" });
+      window.setTimeout(() => {
+        locked = false;
+      }, 850);
+    }
+
+    function onWheel(e) {
+      e.preventDefault();
+      if (locked) return;
+      acc += e.deltaY;
+      window.clearTimeout(accTimer);
+      accTimer = window.setTimeout(() => {
+        acc = 0;
+      }, 140);
+      if (Math.abs(acc) < 36) return;
+      const dir = acc > 0 ? 1 : -1;
+      acc = 0;
+      goPanel(dir);
+    }
+
+    let startY = 0;
+    function onTouchStart(e) {
+      startY = e.touches[0]?.clientY ?? 0;
+    }
+    function onTouchMove(e) {
+      e.preventDefault();
+    }
+    function onTouchEnd(e) {
+      const endY = e.changedTouches[0]?.clientY ?? startY;
+      const dy = startY - endY;
+      if (Math.abs(dy) < 48) return;
+      goPanel(dy > 0 ? 1 : -1);
+    }
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
+
+  function go(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenu(false);
   }

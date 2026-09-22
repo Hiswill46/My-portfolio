@@ -11,7 +11,7 @@
   --accent3: #ff6fa5;
   --grad: linear-gradient(120deg, var(--accent1), var(--accent2));
 }
-html { scroll-behavior: smooth; overflow-x: clip; scroll-snap-type: y mandatory; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   margin: 0;
   background: var(--bg);
@@ -177,8 +177,6 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   height: 100dvh;
   min-height: 100dvh;
   max-height: 100dvh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   width: 100%;
   display: flex;
   align-items: center;

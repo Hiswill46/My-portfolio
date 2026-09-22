@@ -1,312 +1,367 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-const ROLES = ["Developer", "Designer"];
+
+const NAV = [
+  ["home", "Home"],
+  ["about", "About"],
+  ["skills", "Skills"],
+  ["work", "Work"],
+  ["contact", "Contact"],
+];
+
+const LABELS = {
+  home: "Say hello",
+  about: "The short version",
+  skills: "What I use",
+  work: "Recent builds",
+  contact: "Let's talk",
+};
+
+const SKILLS = [
+  "UI/UX Design",
+  "Next.js",
+  "React",
+  "TypeScript",
+  "Frontend Architecture",
+  "Design Systems",
+  "Product Branding",
+  "API Integration",
+  "Motion & Interaction",
+  "Figma",
+  "Performance",
+  "Git",
+];
 
 const WORKS = [
   {
     title: "SPV Bond",
     tag: "Corporate · Dubai",
+    copy: "Formation, funding and advisory site for an SPV firm in Downtown Dubai.",
     href: "https://www.spv-bondproject.com/",
     shot: "/previews/spv.jpg",
-    tall: true,
   },
   {
     title: "KoboLoop",
     tag: "Savings groups",
+    copy: "A product for rotating savings groups — contributions, cycles, and the people in them.",
     href: "https://koboloop-drizzle.vercel.app/",
     shot: "/previews/koboloop.jpg",
-    tall: false,
   },
   {
     title: "CX Assets",
     tag: "Private banking",
+    copy: "Investment banking surface for personal, business, and lending.",
     href: "https://www.cx-assets.com/",
     shot: "/previews/cx.jpg",
-    tall: false,
   },
   {
     title: "SeeCapital",
     tag: "Capital dashboard",
+    copy: "A capital dashboard built to be read quickly, not decorated.",
     href: "https://seecapital.vercel.app/",
     shot: "/previews/see.jpg",
-    tall: false,
   },
 ];
 
-const SERVICES = [
-  { title: "Development", copy: "Next.js and TypeScript systems that ship: corporate sites, dashboards, and product surfaces." },
-  { title: "UI/UX Design", copy: "Clear hierarchy and motion that earns its keep. Gulf-corporate, never gimmicky." },
-  { title: "Product Branding", copy: "Wordmarks, palettes, share cards and favicon systems as a finished kit." },
-  { title: "Motion Design", copy: "Scroll, dock and micro-interactions that make the surface feel alive." },
-];
-
-function Icon({ name }) {
-  const common = { width: 20, height: 20, fill: "currentColor" };
-  if (name === "home")
-    return (
-      <svg {...common} viewBox="0 0 24 24">
-        <path d="M5 22h14a2 2 0 0 0 2-2v-9a1 1 0 0 0-.29-.71l-8-8a1 1 0 0 0-1.41 0l-8 8A1 1 0 0 0 3 11v9a2 2 0 0 0 2 2zm5-2v-5h4v5zm-5-8.59 7-7 7 7V20h-3v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5H5z" />
-      </svg>
-    );
-  if (name === "user")
-    return (
-      <svg {...common} viewBox="0 0 24 24">
-        <path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3zm9 11v-1a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v1h2v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1z" />
-      </svg>
-    );
-  if (name === "work")
-    return (
-      <svg {...common} viewBox="0 0 24 24">
-        <path d="M20 6h-4V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zM10 4h4v2h-4zm10 15H4V8h16z" />
-      </svg>
-    );
-  if (name === "mail")
-    return (
-      <svg {...common} viewBox="0 0 24 24">
-        <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4.7-8 5.3-8-5.3V6l8 5.3L20 6z" />
-      </svg>
-    );
-  return (
-    <svg {...common} viewBox="0 0 24 24">
-      <path d="M12 3C6.5 3 2 6.6 2 11c0 2.2 1.2 4.2 3.1 5.6-.1.8-.5 2-1.6 3.1 1.6-.1 3.1-.8 4.2-1.5.7.2 1.5.3 2.3.3 5.5 0 10-3.6 10-8S17.5 3 12 3z" />
-    </svg>
-  );
-}
-
-function Tile({ w }) {
-  return (
-    <a className={w.tall ? "tile tall" : "tile"} href={w.href} target="_blank" rel="noreferrer">
-      <img src={w.shot} alt={`${w.title} preview`} />
-      <span className="veil" />
-      <span className="cap linkg">{w.tag}</span>
-      <span className="subcap">{w.title}</span>
-    </a>
-  );
-}
-
 export default function App() {
-  const [role, setRole] = useState(0);
   const [section, setSection] = useState("home");
-  const [seen, setSeen] = useState(() => new Set(["home"]));
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [year] = useState(() => new Date().getFullYear());
 
   useEffect(() => {
-    const id = setInterval(() => setRole((r) => (r + 1) % ROLES.length), 2200);
-    return () => clearInterval(id);
+    const glow = document.getElementById("glow");
+    if (!glow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const move = (e: MouseEvent) => {
+      glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+    };
+    window.addEventListener("mousemove", move, { passive: true });
+    return () => window.removeEventListener("mousemove", move);
   }, []);
 
   useEffect(() => {
-    const ids = ["home", "about", "services", "work", "contact"];
+    const panels = document.querySelectorAll(".panel");
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting || !e.target.id) return;
-          const id = e.target.id;
-          setSeen((prev) => {
-            if (prev.has(id)) return prev;
-            const next = new Set(prev);
-            next.add(id);
-            return next;
-          });
-        });
         const vis = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (vis?.target.id) setSection(vis.target.id);
       },
-      { threshold: [0.3, 0.5] },
+      { threshold: [0.35, 0.6] },
     );
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) obs.observe(el);
-    });
+    panels.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
   }, []);
 
-  const year = useMemo(() => new Date().getFullYear(), []);
-  function go(id) {
+  useEffect(() => {
+    const nums = document.querySelectorAll(".num");
+    const seen = new WeakSet<Element>();
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || seen.has(entry.target)) return;
+          seen.add(entry.target);
+          const el = entry.target;
+          const target = Number(el.dataset.count || 0);
+          const start = performance.now();
+          const tick = (now: number) => {
+            const p = Math.min((now - start) / 1100, 1);
+            el.textContent = String(Math.floor(p * target));
+            if (p < 1) requestAnimationFrame(tick);
+            else el.textContent = String(target);
+          };
+          requestAnimationFrame(tick);
+        });
+      },
+      { threshold: 0.6 },
+    );
+    nums.forEach((n) => obs.observe(n));
+    return () => obs.disconnect();
+  }, []);
+
+  function go(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenu(false);
   }
-  function submit(e) {
-    e.preventDefault();
-    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} <${form.email}>`);
-    window.location.href = `mailto:hello@hiswill.dev?subject=${encodeURIComponent("Work with Hiswill")}&body=${body}`;
-    setSent(true);
+
+  function tilt(e) {
+    const card = e.currentTarget;
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(700px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg) translateY(-4px)`;
   }
 
   return (
     <div className="site">
-      <header className="topbar">
-        <div className="wrap inner">
-          <a href="#home" onClick={() => go("home")}>
-            <img className="logo" src="/logo.svg" alt="Hiswill" />
-          </a>
-          <a className="btn btn-sm" href="#contact">
-            Work With Me
-          </a>
-        </div>
-      </header>
+      <div className="cursor-glow" id="glow" />
 
-      <section id="home" className={seen.has("home") ? "block show" : "block"}>
-        <div className="wrap hero">
-          <div className="hero-copy">
-            <h1 className="name">
-              HISWILL
-              <br />
-              IROEGBULAM
-            </h1>
-            <p className="role">
-              I am a <em>{ROLES[role]}</em>
-            </p>
-            <p className="lede">
-              I design and build Next.js sites and product dashboards for SPV firms, private banks, and the apps I ship — from Dubai to Port Harcourt.
-            </p>
-            <div className="row">
-              <a className="btn btn-lg" href="#contact">
-                Contact me
-              </a>
-              <a className="linkg" href="#work">
-                My Portfolio
-              </a>
+      <nav className="topbar">
+        <a className="brand" href="#home" onClick={() => go("home")}>
+          <span className="brand-mark">H</span>
+          Hiswill
+          <span className="brand-live">
+            <span className="dot" />
+            {LABELS[section]}
+          </span>
+        </a>
+        <div className={menu ? "nav-links open" : "nav-links"}>
+          {NAV.map(([id, label]) => (
+            <a key={id} href={`#${id}`} className={section === id ? "active" : ""} onClick={() => go(id)}>
+              {label}
+            </a>
+          ))}
+        </div>
+        <a className="nav-cta" href="#contact" onClick={() => go("contact")}>
+          Got a project?
+        </a>
+        <button className="menu-btn" aria-label="Open menu" onClick={() => setMenu((v) => !v)}>
+          <span />
+          <span />
+          <span />
+        </button>
+      </nav>
+
+      <div className="rail">
+        {NAV.map(([id, label]) => (
+          <button
+            key={id}
+            className={section === id ? "active" : ""}
+            data-label={label}
+            aria-label={label}
+            onClick={() => go(id)}
+          />
+        ))}
+      </div>
+
+      <main>
+        <section className="panel" id="home">
+          <div className="orb" />
+          <div className="panel-inner hero-grid">
+            <div>
+              <div className="eyebrow-line">
+                <span className="bar" />
+                <span>Available for new work</span>
+              </div>
+              <h1 className="hero-name">
+                I'm Hiswill,
+                <br />
+                <span className="grad">web designer</span>
+                <br />
+                & developer.
+              </h1>
+              <p className="hero-desc">
+                I turn ideas into clean, working websites and dashboards — from the first sketch to the last line of code. Design and engineering, handled by one person, end to end.
+              </p>
+              <div className="hero-actions">
+                <a href="#contact" className="btn btn-fill" onClick={() => go("contact")}>
+                  <span className="glint" />
+                  Got a project?
+                </a>
+                <a href="#work" className="btn btn-outline" onClick={() => go("work")}>
+                  My Portfolio
+                </a>
+              </div>
+            </div>
+            <div className="hero-visual">
+              <div className="avatar-ring">
+                <img src="/me.png" alt="Hiswill Iroegbulam" />
+              </div>
+              <div className="float-chip c1">
+                <span className="dotc" />
+                Designing UI
+              </div>
+              <div className="float-chip c2">
+                <span className="dotc" />
+                Shipping code
+              </div>
             </div>
           </div>
-          <div className="me-wrap">
-            <span className="me-glow" aria-hidden="true" />
-            <img className="me" src="/me.png" alt="Hiswill Iroegbulam" />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="about" className={seen.has("about") ? "block show" : "block"}>
-        <div className="wrap copy">
-          <h2 className="accent">About Me.</h2>
-          <h3 className="lead">I'm a freelance front-end developer with over 5 years of experience.</h3>
-          <p>
-            Based between Port Harcourt and the Gulf corridor. Next.js brand sites and product dashboards — SPV firms in Downtown Dubai, PMOs in Muscat, private-banking UIs, and full-stack TypeScript apps.
-          </p>
-            <div className="stats">
-              <div className="stat">
-                <b>7</b>
-                <span>
-                  Years of
-                  <br />
-                  Experience
-                </span>
+        <section className="panel" id="about">
+          <div className="orb" />
+          <div className="panel-inner about-grid">
+            <div>
+              <div className="section-tag">About</div>
+              <h2>One person, two disciplines, no hand-offs.</h2>
+              <div className="about-copy">
+                <p>
+                  I design the interface and build the product that runs it — which means nothing gets lost translating a mockup into working software.
+                </p>
+                <p>
+                  Based between Port Harcourt and the Gulf. The work is Next.js sites and dashboards for SPV firms, private banks, and the products I run.
+                </p>
               </div>
-              <div className="stat">
-                <b>100</b>
-                <span>
-                  Projects
-                  <br />
-                  Completed
-                </span>
-              </div>
-              <div className="stat">
-                <b>50</b>
-                <span>
-                  Satisfied
-                  <br />
-                  Clients
-                </span>
+              <div className="stat-row">
+                <div className="stat-card">
+                  <div className="stat-num">
+                    <span className="num" data-count="100">
+                      0
+                    </span>
+                  </div>
+                  <div className="stat-label">Projects shipped</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-num">
+                    <span className="num" data-count="50">
+                      0
+                    </span>
+                  </div>
+                  <div className="stat-label">Clients</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-num">
+                    <span className="num" data-count="7">
+                      0
+                    </span>
+                  </div>
+                  <div className="stat-label">Years building</div>
+                </div>
               </div>
             </div>
-            <div className="row">
-              <a className="btn btn-lg" href="#contact">
-                Contact me
-              </a>
-              <a className="linkg" href="#work">
-                My Portfolio
-              </a>
-            </div>
-        </div>
-      </section>
-
-      <section id="services" className={seen.has("services") ? "block show" : "block"}>
-        <div className="wrap copy">
-          <h2 className="accent">What I Do.</h2>
-          <h3 className="lead">Four crafts. The surface has to feel inevitable.</h3>
-          {SERVICES.map((s) => (
-              <article className="svc" key={s.title}>
+            <div className="principles">
+              <div className="principle">
+                <div className="icon">◐</div>
                 <div>
-                  <h3>{s.title}</h3>
-                  <p>{s.copy}</p>
+                  <h3>Design first</h3>
+                  <p>Every build starts as a layout decision, not a component library default.</p>
                 </div>
-                <div className="svc-side">
-                  <a className="btn btn-sq" href="#work" aria-label={`See ${s.title} work`}>
-                    ↗
-                  </a>
-                  <a className="linkg" href="#work" style={{ fontSize: 14 }}>
-                    Learn More
-                  </a>
+              </div>
+              <div className="principle">
+                <div className="icon">⌁</div>
+                <div>
+                  <h3>Built to last</h3>
+                  <p>Clean, maintainable code — the kind future-me won't resent.</p>
                 </div>
-              </article>
-            ))}
-        </div>
-      </section>
-
-      <section id="work" className={seen.has("work") ? "block show" : "block"}>
-        <div className="wrap">
-          <div className="intro">
-            <h2 className="accent">
-              My Latest
-              <br />
-              Works.
-            </h2>
-            <p>Live sites only. Open a frame.</p>
+              </div>
+              <div className="principle">
+                <div className="icon">◈</div>
+                <div>
+                  <h3>Detail-driven</h3>
+                  <p>Spacing, motion, and copy get the same attention as the architecture.</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="works">
-            {WORKS.map((w) => (
-              <Tile key={w.title} w={w} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="contact" className={seen.has("contact") ? "block show" : "block"}>
-        <div className="wrap contact-grid">
-          <div>
-            <p className="accent" style={{ fontSize: 18, letterSpacing: "0.2em" }}>
-              Get in touch
-            </p>
-            <h2 className="big">
-              Let's work
+        <section className="panel" id="skills">
+          <div className="orb" />
+          <div className="panel-inner">
+            <div className="skills-head">
+              <h2>Tools I reach for</h2>
+              <p>A working set, kept current — picked for the job rather than habit.</p>
+            </div>
+            <div className="skill-cloud">
+              {SKILLS.map((s) => (
+                <span className="skill-pill" key={s}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="panel" id="work">
+          <div className="orb" />
+          <div className="panel-inner">
+            <div className="work-head">
+              <div className="section-tag">Selected work</div>
+              <h2>A few things I've built</h2>
+            </div>
+            <div className="work-grid">
+              {WORKS.map((w) => (
+                <a
+                  className="work-card"
+                  key={w.title}
+                  href={w.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onMouseMove={tilt}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "";
+                  }}
+                >
+                  <img className="work-shot" src={w.shot} alt="" />
+                  <div className="work-body">
+                    <div className="work-kicker">{w.tag}</div>
+                    <h3>{w.title}</h3>
+                    <p>{w.copy}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="panel" id="contact">
+          <div className="panel-inner contact-inner">
+            <div className="section-tag">Contact</div>
+            <h2>
+              Have a project in mind?
               <br />
-              Together!
+              Let's talk it through.
             </h2>
-            <p className="fine">
-              © {year} Hiswill Iroegbulam ·{" "}
-              <a href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">
+            <p>Tell me what you're building and where it's stuck — I'll tell you honestly whether I'm the right fit.</p>
+            <a className="contact-email" href="mailto:hello@hiswill.dev">
+              hello@hiswill.dev
+            </a>
+            <div className="socials">
+              <a className="social-btn" href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">
                 GitHub
               </a>
-            </p>
+              <a className="social-btn" href="https://x.com/iroegbulam_e" target="_blank" rel="noreferrer">
+                X
+              </a>
+            </div>
+            <div className="foot-note">
+              <span>© {year} Hiswill Iroegbulam</span>
+              <span>Designed & built by hand</span>
+            </div>
           </div>
-          <form className="form" onSubmit={submit}>
-            <input required placeholder="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            <input required type="email" placeholder="Your email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-            <textarea required placeholder="Your message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-            <button className="btn btn-lg" type="submit">
-              {sent ? "Opening mail…" : "Send Message"}
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <nav className="dock" aria-label="Primary">
-        {(
-          [
-            ["home", "home"],
-            ["about", "user"],
-            ["services", "mail"],
-            ["work", "work"],
-            ["contact", "chat"],
-          ]
-        ).map(([id, icon]) => (
-          <button key={id} className={section === id ? "active" : ""} onClick={() => go(id)} aria-label={id} type="button">
-            <Icon name={icon} />
-          </button>
-        ))}
-      </nav>
+        </section>
+      </main>
     </div>
   );
 }

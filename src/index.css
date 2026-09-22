@@ -231,29 +231,76 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
 
 .hero-visual { position: relative; display: flex; align-items: center; justify-content: center; height: 460px; }
 .avatar-ring {
-  width: 340px;
-  height: 340px;
-  border-radius: 38% 62% 60% 40% / 45% 40% 60% 55%;
-  background: radial-gradient(circle at 50% 42%, rgba(124, 92, 252, 0.22), rgba(34, 211, 238, 0.08) 58%, transparent 72%);
-  border: 1px solid var(--border);
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(124, 92, 252, 0.28), rgba(34, 211, 238, 0.08) 62%, transparent 74%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: morph 12s ease-in-out infinite;
-  box-shadow: 0 30px 80px rgba(124, 92, 252, 0.25);
+  animation: morph 12s ease-in-out infinite, glowpulse 4.5s ease-in-out infinite;
+  box-shadow:
+    0 0 24px rgba(124, 92, 252, 0.45),
+    0 0 60px rgba(34, 211, 238, 0.28),
+    0 0 110px rgba(255, 111, 165, 0.18);
 }
-.avatar-ring img {
-  width: 92%;
-  height: 92%;
-  object-fit: contain;
-  object-position: center bottom;
+.avatar-ring::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: inherit;
+  background: conic-gradient(from 120deg, rgba(124, 92, 252, 0.0), rgba(124, 92, 252, 0.7), rgba(34, 211, 238, 0.85), rgba(255, 111, 165, 0.55), rgba(124, 92, 252, 0.0));
+  filter: blur(16px);
+  opacity: 0.85;
+  z-index: 0;
+  animation: spin 10s linear infinite;
+}
+.avatar-disc {
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(155deg, #7a4dff 0%, #b14bff 42%, #3ec8f0 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 0 -20px 40px rgba(0, 0, 0, 0.18),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.avatar-disc img {
+  width: 100%;
+  height: 118%;
+  object-fit: cover;
+  object-position: center 8%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+.avatar-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, 0.42) 48%, transparent 62%);
+  mix-blend-mode: screen;
+  animation: shine 3.8s ease-in-out infinite;
 }
 @keyframes morph {
-  0%, 100% { border-radius: 38% 62% 60% 40% / 45% 40% 60% 55%; }
-  50% { border-radius: 60% 40% 42% 58% / 52% 60% 40% 48%; }
+  0%, 100% { border-radius: 46% 54% 50% 50% / 48% 46% 54% 52%; }
+  50% { border-radius: 54% 46% 48% 52% / 50% 56% 44% 50%; }
 }
+@keyframes glowpulse {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(124, 92, 252, 0.35)); }
+  50% { filter: drop-shadow(0 0 22px rgba(34, 211, 238, 0.55)); }
+}
+@keyframes shine {
+  0%, 100% { transform: translateX(-30%); opacity: 0.25; }
+  50% { transform: translateX(30%); opacity: 0.9; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 .float-chip {
   position: absolute;
   padding: 9px 14px;

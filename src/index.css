@@ -485,7 +485,7 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   .nav-links.open { display: flex; z-index: 120; }
   .menu-btn { display: block; }
   .nav-cta, .rail, .brand-live { display: none; }
-  .panel { padding: 84px 18px 16px; }
+  .panel { padding: 84px 32px 16px; }
   .hero-grid, .about-grid { grid-template-columns: 1fr; gap: 16px; }
   .work-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .hero-visual { height: auto; order: -1; }
@@ -514,8 +514,10 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
 @media (max-width: 640px) {
   .panel {
     align-items: flex-start;
-    padding: 78px 20px 22px;
+    padding: 78px 36px 22px;
   }
+  .topbar { padding-left: 28px; padding-right: 28px; }
+  .nav-links.open { right: 28px; }
   .panel-inner { margin-block: auto; }
   .float-chip { display: none; }
   .avatar-ring { width: 188px; height: 188px; }

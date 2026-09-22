@@ -12,15 +12,13 @@
   --grad: linear-gradient(120deg, var(--accent1), var(--accent2));
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { overflow-x: hidden; }
+html, body { max-width: 100%; }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  max-width: 100%;
 }
 ::selection { background: var(--accent1); color: #fff; }
 a { color: inherit; text-decoration: none; }
@@ -187,8 +185,8 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: calc(var(--p, 0) * 28px);
   transform-origin: center top;
-  transform: scale(calc(1 - var(--p, 0) * 0.075));
-  filter: brightness(calc(1 - var(--p, 0) * 0.32));
+  transform: scale(calc(1 - var(--p, 0) * 0.14));
+  filter: brightness(calc(1 - var(--p, 0) * 0.45));
 }
 .panel-inner { width: 100%; max-width: 1180px; margin: 0 auto; position: relative; z-index: 2; }
 .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; pointer-events: none; z-index: 0; }

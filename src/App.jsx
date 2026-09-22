@@ -205,7 +205,7 @@ export default function App() {
             </div>
             <div className="hero-visual">
               <div className="avatar-ring">
-                <img src="/me.png" alt="Hiswill Iroegbulam" />
+                <img src="/me-cut.png" alt="Hiswill Iroegbulam" />
               </div>
               <div className="float-chip c1">
                 <span className="dotc" />

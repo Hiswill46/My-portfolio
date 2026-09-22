@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 const NAV = [
@@ -63,6 +63,15 @@ const WORKS = [
   },
 ];
 
+function panelTops() {
+  let y = 0;
+  return Array.from(document.querySelectorAll(".panel"), (el) => {
+    const top = y;
+    y += el.offsetHeight;
+    return top;
+  });
+}
+
 export default function App() {
   const [section, setSection] = useState("home");
   const [menu, setMenu] = useState(false);
@@ -78,12 +87,19 @@ export default function App() {
     return () => window.removeEventListener("mousemove", move);
   }, []);
 
+  const jump = useRef(() => {});
+
   useEffect(() => {
     const ids = NAV.map(([id]) => id);
     function sync() {
-      const h = window.innerHeight || 1;
-      const i = Math.max(0, Math.min(ids.length - 1, Math.round(window.scrollY / h)));
-      setSection((cur) => (cur === ids[i] ? cur : ids[i]));
+      const y = window.scrollY + 2;
+      const list = panelTops();
+      let i = 0;
+      list.forEach((top, idx) => {
+        if (top <= y) i = idx;
+      });
+      const id = ids[i] ?? "home";
+      setSection((cur) => (cur === id ? cur : id));
     }
     sync();
     window.addEventListener("scroll", sync, { passive: true });
@@ -121,22 +137,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      jump.current = (top) => window.scrollTo(0, top);
+      return;
+    }
     let lockUntil = 0;
     let frame = 0;
 
-    function goPanel(dir) {
+    function animateTo(top) {
       const now = performance.now();
-      if (now < lockUntil) return;
-      const count = document.querySelectorAll(".panel").length;
-      const h = window.innerHeight || 1;
-      const index = Math.round(window.scrollY / h);
-      const next = Math.max(0, Math.min(count - 1, index + dir));
-      const top = next * h;
-      if (Math.abs(top - window.scrollY) < 2) return;
       lockUntil = now + 520;
       const start = window.scrollY;
       const dist = top - start;
+      if (Math.abs(dist) < 2) {
+        window.scrollTo(0, top);
+        return;
+      }
       const dur = 420;
       const t0 = now;
       cancelAnimationFrame(frame);
@@ -148,6 +164,20 @@ export default function App() {
         else window.scrollTo(0, top);
       };
       frame = requestAnimationFrame(step);
+    }
+    jump.current = animateTo;
+
+    function goPanel(dir) {
+      if (performance.now() < lockUntil) return;
+      const panels = panelTops();
+      const y = window.scrollY + 2;
+      let index = 0;
+      panels.forEach((top, idx) => {
+        if (top <= y) index = idx;
+      });
+      const next = Math.max(0, Math.min(panels.length - 1, index + dir));
+      if (next === index) return;
+      animateTo(panels[next]);
     }
 
     function onWheel(e) {
@@ -182,9 +212,13 @@ export default function App() {
     };
   }, []);
 
-  function go(id) {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  function go(id, event) {
+    event?.preventDefault();
+    const index = NAV.findIndex(([n]) => n === id);
+    const top = panelTops()[index] ?? 0;
+    setSection(id);
     setMenu(false);
+    jump.current(top);
   }
 
   function tilt(e) {
@@ -200,7 +234,7 @@ export default function App() {
       <div className="cursor-glow" id="glow" />
 
       <nav className="topbar">
-        <a className="brand" href="#home" onClick={() => go("home")}>
+        <a className="brand" href="#home" onClick={(e) => go("home", e)}>
           <span className="brand-mark">H</span>
           Hiswill
           <span className="brand-live">
@@ -210,12 +244,12 @@ export default function App() {
         </a>
         <div className={menu ? "nav-links open" : "nav-links"}>
           {NAV.map(([id, label]) => (
-            <a key={id} href={`#${id}`} className={section === id ? "active" : ""} onClick={() => go(id)}>
+            <a key={id} href={`#${id}`} className={section === id ? "active" : ""} onClick={(e) => go(id, e)}>
               {label}
             </a>
           ))}
         </div>
-        <a className="nav-cta" href="#contact" onClick={() => go("contact")}>
+        <a className="nav-cta" href="#contact" onClick={(e) => go("contact", e)}>
           Got a project?
         </a>
         <button className="menu-btn" aria-label="Open menu" onClick={() => setMenu((v) => !v)}>
@@ -257,11 +291,11 @@ export default function App() {
                 I turn ideas into clean, working websites and dashboards — from the first sketch to the last line of code. Design and engineering, handled by one person, end to end.
               </p>
               <div className="hero-actions">
-                <a href="#contact" className="btn btn-fill" onClick={() => go("contact")}>
+                <a href="#contact" className="btn btn-fill" onClick={(e) => go("contact", e)}>
                   <span className="glint" />
                   Got a project?
                 </a>
-                <a href="#work" className="btn btn-outline" onClick={() => go("work")}>
+                <a href="#work" className="btn btn-outline" onClick={(e) => go("work", e)}>
                   My Portfolio
                 </a>
               </div>

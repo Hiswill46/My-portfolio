@@ -46,7 +46,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   from { transform: translate(0,0) scale(1); }
   to { transform: translate(40px,-30px) scale(1.12); }
 }
-.app { position: relative; z-index: 1; }
+.app { position: relative; z-index: 1; isolation: isolate; }
 .topbar { position: fixed; top: 22px; right: 28px; z-index: 40; }
 .pill {
   display: inline-flex; align-items: center; justify-content: center;
@@ -58,10 +58,10 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .pill:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 16px 40px rgba(226, 60, 255, 0.45); }
 .pill.ghost { background: transparent; color: #d7b8ff; }
 .pill.sm { padding: 10px 20px; }
-.section { min-height: 100vh; display: flex; align-items: center; padding: 8vh 8vw 16vh; }
+.section { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; padding: 8vh 8vw 16vh; }
 .section.right { justify-content: flex-end; }
-.stack { max-width: 720px; width: 100%; }
-.stack.wide { max-width: 860px; }
+.stack { max-width: 720px; width: min(720px, 100%); }
+.stack.wide { max-width: 860px; width: min(860px, 100%); }
 .kicker { font-family: Aldrich, sans-serif; color: var(--pink); letter-spacing: 0.18em; font-size: 13px; margin-bottom: 14px; }
 .display {
   font-family: Orbitron, sans-serif; font-weight: 800;

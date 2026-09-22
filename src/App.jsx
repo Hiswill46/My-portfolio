@@ -129,17 +129,27 @@ export default function App() {
     function goPanel(dir) {
       if (locked) return;
       const list = panels();
+      const h = window.innerHeight || 1;
       const y = window.scrollY;
-      const target =
+      const next =
         dir > 0
-          ? list.find((el) => el.offsetTop > y + 12)
-          : [...list].reverse().find((el) => el.offsetTop < y - 12);
-      if (!target) return;
+          ? Math.min(list.length - 1, Math.floor(y / h + 0.05) + 1)
+          : Math.max(0, Math.ceil(y / h - 0.05) - 1);
+      const top = Math.round(next * h);
+      if (Math.abs(top - y) < 2) return;
       locked = true;
-      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
-      window.setTimeout(() => {
-        locked = false;
-      }, 900);
+      const start = y;
+      const dist = top - start;
+      const dur = 480;
+      const t0 = performance.now();
+      const frame = (now) => {
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = 1 - (1 - p) * (1 - p);
+        window.scrollTo(0, Math.round(start + dist * eased));
+        if (p < 1) requestAnimationFrame(frame);
+        else locked = false;
+      };
+      requestAnimationFrame(frame);
     }
 
     function onWheel(e) {

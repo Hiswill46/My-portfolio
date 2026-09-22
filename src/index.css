@@ -510,6 +510,54 @@ p { margin: 0; color: var(--text-muted); line-height: 1.65; }
   .contact-email { font-size: 18px; overflow-wrap: anywhere; }
   .foot-note { margin-top: 24px; }
 }
+
+@media (max-width: 640px) {
+  .panel {
+    align-items: flex-start;
+    padding: 78px 20px 22px;
+  }
+  .panel-inner { margin-block: auto; }
+  .float-chip { display: none; }
+  .avatar-ring { width: 188px; height: 188px; }
+  .hero-name { font-size: 34px; }
+  .hero-desc { font-size: 14.5px; line-height: 1.55; }
+  .hero-actions { flex-direction: column; align-items: center; gap: 10px; }
+  .hero-actions .btn { width: min(260px, 100%); justify-content: center; }
+
+  .about-grid h2 { font-size: 28px; margin-bottom: 12px; }
+  .about-copy p { font-size: 14.5px; line-height: 1.55; }
+  .about-copy p + p { margin-top: 10px; }
+  .stat-row { gap: 8px; margin-top: 16px; }
+  .stat-card { text-align: center; padding: 12px 8px; }
+  .stat-num { font-size: 24px; }
+  .stat-label { font-size: 12px; margin-top: 2px; }
+  .principles { gap: 8px; }
+  .principle { padding: 10px 12px; }
+  .principle p { font-size: 13px; }
+
+  .skills-head { text-align: center; margin-bottom: 22px; }
+  .skills-head h2, .skills-head p { margin-inline: auto; }
+  .skills-head p { max-width: 32ch; }
+  .skill-cloud { justify-content: center; }
+
+  .work-head { margin-bottom: 14px; }
+  .work-grid { grid-template-columns: 1fr; gap: 10px; }
+  .work-card { flex-direction: row; align-items: stretch; }
+  .browser-chrome { display: none; }
+  .shot-wrap { width: 112px; min-height: 104px; height: auto; align-self: stretch; flex: none; }
+  .work-shot { position: absolute; inset: 0; height: 100%; }
+  .shot-scrim { display: none; }
+  .work-body { display: flex; flex-direction: column; justify-content: center; padding: 10px 12px; min-width: 0; }
+  .work-kicker { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .work-card h3 { font-size: 16px; margin-top: 2px; }
+  .work-tags { margin-top: 8px; }
+
+  .contact-inner, .contact-inner h2, .contact-inner > p { text-align: center; }
+  .contact-inner > p { margin-inline: auto; }
+  .contact-email { font-size: 18px; }
+  .socials { justify-content: center; margin-top: 22px; }
+  .foot-note { flex-direction: column; align-items: center; text-align: center; gap: 4px; margin-top: 28px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;

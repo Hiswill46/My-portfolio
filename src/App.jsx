@@ -126,25 +126,20 @@ export default function App() {
     let acc = 0;
     let accTimer = 0;
 
-    function indexAt(y) {
-      const list = panels();
-      let i = 0;
-      list.forEach((el, idx) => {
-        if (el.offsetTop <= y + 8) i = idx;
-      });
-      return { list, i };
-    }
-
     function goPanel(dir) {
       if (locked) return;
-      const { list, i } = indexAt(window.scrollY);
-      const next = Math.max(0, Math.min(list.length - 1, i + dir));
-      if (next === i) return;
+      const list = panels();
+      const y = window.scrollY;
+      const target =
+        dir > 0
+          ? list.find((el) => el.offsetTop > y + 12)
+          : [...list].reverse().find((el) => el.offsetTop < y - 12);
+      if (!target) return;
       locked = true;
-      window.scrollTo({ top: list[next].offsetTop, behavior: "smooth" });
+      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
       window.setTimeout(() => {
         locked = false;
-      }, 850);
+      }, 900);
     }
 
     function onWheel(e) {

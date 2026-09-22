@@ -87,6 +87,7 @@ function Tile({ w }) {
 export default function App() {
   const [role, setRole] = useState(0);
   const [section, setSection] = useState("home");
+  const [seen, setSeen] = useState(() => new Set(["home"]));
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
 
@@ -99,6 +100,16 @@ export default function App() {
     const ids = ["home", "about", "services", "work", "contact"];
     const obs = new IntersectionObserver(
       (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting || !e.target.id) return;
+          const id = e.target.id;
+          setSeen((prev) => {
+            if (prev.has(id)) return prev;
+            const next = new Set(prev);
+            next.add(id);
+            return next;
+          });
+        });
         const vis = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
@@ -137,7 +148,7 @@ export default function App() {
         </div>
       </header>
 
-      <section id="home" className="block">
+      <section id="home" className={seen.has("home") ? "block show" : "block"}>
         <div className="wrap hero">
           <div className="hero-copy">
             <h1 className="name">
@@ -160,11 +171,14 @@ export default function App() {
               </a>
             </div>
           </div>
-          <img className="me" src="/me.png" alt="Hiswill Iroegbulam" />
+          <div className="me-wrap">
+            <span className="me-glow" aria-hidden="true" />
+            <img className="me" src="/me.png" alt="Hiswill Iroegbulam" />
+          </div>
         </div>
       </section>
 
-      <section id="about" className="block">
+      <section id="about" className={seen.has("about") ? "block show" : "block"}>
         <div className="wrap copy">
           <h2 className="accent">About Me.</h2>
           <h3 className="lead">I'm a freelance front-end developer with over 5 years of experience.</h3>
@@ -208,7 +222,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="services" className="block">
+      <section id="services" className={seen.has("services") ? "block show" : "block"}>
         <div className="wrap copy">
           <h2 className="accent">What I Do.</h2>
           <h3 className="lead">Four crafts. The surface has to feel inevitable.</h3>
@@ -231,7 +245,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="work" className="block">
+      <section id="work" className={seen.has("work") ? "block show" : "block"}>
         <div className="wrap">
           <div className="intro">
             <h2 className="accent">
@@ -249,7 +263,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="contact" className="block">
+      <section id="contact" className={seen.has("contact") ? "block show" : "block"}>
         <div className="wrap contact-grid">
           <div>
             <p className="accent" style={{ fontSize: 18, letterSpacing: "0.2em" }}>

@@ -121,36 +121,54 @@ export default function App() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let busyUntil = 0;
+    let armed = true;
+    let animating = false;
+    let wheelIdle = true;
+    let idleTimer = 0;
     let frame = 0;
 
+    function maybeArm() {
+      if (!animating && wheelIdle) armed = true;
+    }
+
     function goPanel(dir) {
-      if (performance.now() < busyUntil) return;
+      if (!armed || animating) return;
       const count = document.querySelectorAll(".panel").length;
       const h = window.innerHeight || 1;
-      const y = window.scrollY;
-      const index = Math.round(y / h);
+      const index = Math.round(window.scrollY / h);
       const next = Math.max(0, Math.min(count - 1, index + dir));
       const top = next * h;
-      if (Math.abs(top - y) < 2) return;
-      const start = y;
+      if (Math.abs(top - window.scrollY) < 2) return;
+      armed = false;
+      animating = true;
+      const start = window.scrollY;
       const dist = top - start;
-      const dur = 460;
+      const dur = 420;
       const t0 = performance.now();
-      busyUntil = t0 + dur + 700;
       cancelAnimationFrame(frame);
       const step = (now) => {
         const p = Math.min(1, (now - t0) / dur);
         const eased = 1 - (1 - p) * (1 - p);
         window.scrollTo(0, Math.round(start + dist * eased));
         if (p < 1) frame = requestAnimationFrame(step);
+        else {
+          window.scrollTo(0, top);
+          animating = false;
+          maybeArm();
+        }
       };
       frame = requestAnimationFrame(step);
     }
 
     function onWheel(e) {
       e.preventDefault();
-      if (Math.abs(e.deltaY) < 16) return;
+      window.clearTimeout(idleTimer);
+      wheelIdle = false;
+      idleTimer = window.setTimeout(() => {
+        wheelIdle = true;
+        maybeArm();
+      }, 240);
+      if (Math.abs(e.deltaY) < 12) return;
       goPanel(e.deltaY > 0 ? 1 : -1);
     }
 
@@ -164,6 +182,12 @@ export default function App() {
     function onTouchEnd(e) {
       const dy = startY - (e.changedTouches[0]?.clientY ?? startY);
       if (Math.abs(dy) < 48) return;
+      wheelIdle = false;
+      window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        wheelIdle = true;
+        maybeArm();
+      }, 240);
       goPanel(dy > 0 ? 1 : -1);
     }
 
@@ -173,6 +197,7 @@ export default function App() {
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(idleTimer);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);

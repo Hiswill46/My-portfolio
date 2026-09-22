@@ -1,28 +1,87 @@
 import { useEffect, useMemo, useState } from "react";
 
-const ROLES = ["DESIGNER", "ENGINEER", "BUILDER", "STRATEGIST"];
+const ROLES = ["Developer", "Designer"];
 
 const WORKS = [
-  { title: "SPV Bond", tag: "Corporate \u00b7 Dubai", copy: "SPV formation, structuring and offshore advisory.", href: "https://www.spv-bondproject.com/", shot: "https://image.thum.io/get/width/1000/crop/620/https://www.spv-bondproject.com/" },
-  { title: "KoboLoop", tag: "Savings groups", copy: "Join a group, contribute, and collect on schedule.", href: "https://koboloop-drizzle.vercel.app/", shot: "https://image.thum.io/get/width/1000/crop/620/https://koboloop-drizzle.vercel.app/" },
-  { title: "CX Assets", tag: "Private banking", copy: "Investment and banking surface. This is the live deploy.", href: "https://cxassets.vercel.app/", shot: "https://image.thum.io/get/width/1000/crop/620/https://cxassets.vercel.app/" },
-  { title: "SeeCapital", tag: "Capital dashboard", copy: "Sign-in for the capital dashboard.", href: "https://seecapital.vercel.app/", shot: "https://image.thum.io/get/width/1000/crop/620/https://seecapital.vercel.app/" },
+  {
+    title: "SPV Bond",
+    tag: "Corporate · Dubai",
+    href: "https://www.spv-bondproject.com/",
+    shot: "https://image.thum.io/get/width/1000/crop/620/https://www.spv-bondproject.com/",
+    tall: true,
+  },
+  {
+    title: "KoboLoop",
+    tag: "Savings groups",
+    href: "https://koboloop-drizzle.vercel.app/",
+    shot: "https://image.thum.io/get/width/1000/crop/620/https://koboloop-drizzle.vercel.app/",
+    tall: false,
+  },
+  {
+    title: "CX Assets",
+    tag: "Private banking",
+    href: "https://cxassets.vercel.app/",
+    shot: "https://image.thum.io/get/width/1000/crop/620/https://cxassets.vercel.app/",
+    tall: false,
+  },
+  {
+    title: "SeeCapital",
+    tag: "Capital dashboard",
+    href: "https://seecapital.vercel.app/",
+    shot: "https://image.thum.io/get/width/1000/crop/620/https://seecapital.vercel.app/",
+    tall: false,
+  },
 ];
 
 const SERVICES = [
-  { title: "Development", copy: "Next.js and TypeScript systems that ship: corporate sites, dashboards, and product surfaces with production polish." },
-  { title: "UI/UX Design", copy: "Interfaces with Gulf-corporate restraint \u2014 clear hierarchy, motion that earns its keep, zero gimmicks." },
-  { title: "Product Branding", copy: "Wordmarks, palettes, OG cards and favicon systems handed off as atomic brand kits." },
-  { title: "Motion Design", copy: "Scroll, dock, aurora and micro-interaction languages that make a site feel alive without getting in the way." },
+  { title: "Development", copy: "Next.js and TypeScript systems that ship: corporate sites, dashboards, and product surfaces." },
+  { title: "UI/UX Design", copy: "Clear hierarchy and motion that earns its keep. Gulf-corporate, never gimmicky." },
+  { title: "Product Branding", copy: "Wordmarks, palettes, share cards and favicon systems as a finished kit." },
+  { title: "Motion Design", copy: "Scroll, dock and micro-interactions that make the surface feel alive." },
 ];
 
 function Icon({ name }) {
-  const common = { width: 20, height: 20, fill: "none", stroke: "currentColor", strokeWidth: 1.7 };
-  if (name === "home") return (<svg {...common} viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-8.5Z" /></svg>);
-  if (name === "user") return (<svg {...common} viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2" /><path d="M5 19c1.6-3.2 4-4.8 7-4.8S17.4 15.8 19 19" /></svg>);
-  if (name === "work") return (<svg {...common} viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="2" /><path d="M9 8V6.8A1.8 1.8 0 0 1 10.8 5h2.4A1.8 1.8 0 0 1 15 6.8V8" /></svg>);
-  if (name === "mail") return (<svg {...common} viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2" /><path d="m5 8 7 5 7-5" /></svg>);
-  return (<svg {...common} viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M7 16h6" /><path d="M5 6h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 3V7a1 1 0 0 1 1-1Z" /></svg>);
+  const common = { width: 20, height: 20, fill: "currentColor" };
+  if (name === "home")
+    return (
+      <svg {...common} viewBox="0 0 24 24">
+        <path d="M5 22h14a2 2 0 0 0 2-2v-9a1 1 0 0 0-.29-.71l-8-8a1 1 0 0 0-1.41 0l-8 8A1 1 0 0 0 3 11v9a2 2 0 0 0 2 2zm5-2v-5h4v5zm-5-8.59 7-7 7 7V20h-3v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5H5z" />
+      </svg>
+    );
+  if (name === "user")
+    return (
+      <svg {...common} viewBox="0 0 24 24">
+        <path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3zm9 11v-1a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v1h2v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1z" />
+      </svg>
+    );
+  if (name === "work")
+    return (
+      <svg {...common} viewBox="0 0 24 24">
+        <path d="M20 6h-4V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zM10 4h4v2h-4zm10 15H4V8h16z" />
+      </svg>
+    );
+  if (name === "mail")
+    return (
+      <svg {...common} viewBox="0 0 24 24">
+        <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4.7-8 5.3-8-5.3V6l8 5.3L20 6z" />
+      </svg>
+    );
+  return (
+    <svg {...common} viewBox="0 0 24 24">
+      <path d="M12 3C6.5 3 2 6.6 2 11c0 2.2 1.2 4.2 3.1 5.6-.1.8-.5 2-1.6 3.1 1.6-.1 3.1-.8 4.2-1.5.7.2 1.5.3 2.3.3 5.5 0 10-3.6 10-8S17.5 3 12 3z" />
+    </svg>
+  );
+}
+
+function Tile({ w }) {
+  return (
+    <a className={w.tall ? "tile tall" : "tile"} href={w.href} target="_blank" rel="noreferrer">
+      <img src={w.shot} alt={`${w.title} preview`} />
+      <span className="veil" />
+      <span className="cap linkg">{w.tag}</span>
+      <span className="subcap">{w.title}</span>
+    </a>
+  );
 }
 
 export default function App() {
@@ -37,119 +96,210 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const ids = ["home", "about", "work", "services", "contact"];
-    const obs = new IntersectionObserver((entries) => {
-      const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (vis) setSection(vis.target.id);
-    }, { threshold: [0.35, 0.55] });
-    ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+    const ids = ["home", "about", "services", "work", "contact"];
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const vis = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (vis?.target.id) setSection(vis.target.id);
+      },
+      { threshold: [0.3, 0.5] },
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
     return () => obs.disconnect();
   }, []);
 
   const year = useMemo(() => new Date().getFullYear(), []);
-  function go(id) { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); }
+  function go(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }
   function submit(e) {
     e.preventDefault();
-    const body = encodeURIComponent(`${form.message}\n\n\u2014 ${form.name} <${form.email}>`);
+    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} <${form.email}>`);
     window.location.href = `mailto:hello@hiswill.dev?subject=${encodeURIComponent("Work with Hiswill")}&body=${body}`;
     setSent(true);
   }
 
+  const [spv, kobo, cx, see] = WORKS;
+
   return (
-    <div className="app">
-      <div className="aurora" aria-hidden="true">
-        <span className="orb a" />
-        <span className="orb b" />
-        <span className="orb c" />
-      </div>
+    <div className="site">
       <header className="topbar">
-        <a className="pill" href="#contact">Work With Me</a>
+        <div className="wrap inner">
+          <a href="#home" onClick={() => go("home")}>
+            <img className="logo" src="https://hiswill.vercel.app/static/media/logo.5ee63ad27c9c8fc5ec9abe0e7e8a9eb8.svg" alt="Hiswill" />
+          </a>
+          <a className="btn btn-sm" href="#contact">
+            Work With Me
+          </a>
+        </div>
       </header>
-      <section id="home" className="section">
-        <div className="stack">
-          <h1 className="display">HISWILL<br />IROEGBULAM</h1>
-          <p className="role-line">I AM A <em>{ROLES[role]}</em></p>
-          <p className="lede">I design and ship motion-rich product surfaces for Gulf corporates, fintech, and founders who need the work to look expensive and behave like software.</p>
-          <div className="actions">
-            <a className="pill" href="#contact">contact me</a>
-            <a className="pill ghost" href="#work">My portfolio</a>
+
+      <section id="home" className="block">
+        <div className="wrap hero-copy">
+          <h1 className="name">
+            HISWILL
+            <br />
+            IROEGBULAM
+          </h1>
+          <p className="role">
+            I am a <em>{ROLES[role]}</em>
+          </p>
+          <p className="lede">
+            Freelance front-end work for Gulf corporates and product teams. The sites have to look expensive and behave like software.
+          </p>
+          <div className="row">
+            <a className="btn btn-lg" href="#contact">
+              Contact me
+            </a>
+            <a className="linkg" href="#work">
+              My Portfolio
+            </a>
           </div>
         </div>
       </section>
-      <section id="about" className="section right">
-        <div className="stack">
-          <p className="h-section">ABOUT ME.</p>
-          <h2 className="h-lead">I'm a freelance front-end developer with over 5 years of experience.</h2>
-          <p className="muted">Based between Port Harcourt and the Gulf corridor. I build Next.js brand sites and product dashboards \u2014 SPV structuring, private-banking UIs, and full-stack TypeScript apps.</p>
-          <div className="stats">
-            <div className="stat"><b>5+</b><span>Years of Experience</span></div>
-            <div className="stat"><b>22+</b><span>Projects Completed</span></div>
-            <div className="stat"><b>4</b><span>Live Products</span></div>
-          </div>
-          <div className="actions">
-            <a className="pill sm" href="#contact">Contact me</a>
-            <a className="pill ghost" href="#work">My Portfolio</a>
+
+      <section id="about" className="block">
+        <div className="wrap about-grid">
+          <div className="portrait" role="img" aria-label="Portrait of Hiswill Iroegbulam" />
+          <div>
+            <h2 className="accent">About Me.</h2>
+            <h3 className="lead">I'm a freelance front-end developer with over 5 years of experience.</h3>
+            <p>
+              Based between Port Harcourt and the Gulf corridor. Next.js brand sites and product dashboards — SPV firms in Downtown Dubai, PMOs in Muscat, private-banking UIs, and full-stack TypeScript apps.
+            </p>
+            <div className="stats">
+              <div className="stat">
+                <b>7</b>
+                <span>
+                  Years of
+                  <br />
+                  Experience
+                </span>
+              </div>
+              <div className="stat">
+                <b>200+</b>
+                <span>
+                  Projects
+                  <br />
+                  Completed
+                </span>
+              </div>
+              <div className="stat">
+                <b>13k+</b>
+                <span>
+                  Satisfied
+                  <br />
+                  Clients
+                </span>
+              </div>
+            </div>
+            <div className="row">
+              <a className="btn btn-lg" href="#contact">
+                Contact me
+              </a>
+              <a className="linkg" href="#work">
+                My Portfolio
+              </a>
+            </div>
           </div>
         </div>
       </section>
-      <section id="services" className="section right">
-        <div className="stack">
-          <p className="h-section">WHAT I DO.</p>
-          <h2 className="h-lead">Four crafts, one standard \u2014 the surface has to feel inevitable.</h2>
-          <div className="services">
+
+      <section id="services" className="block">
+        <div className="wrap svc-grid">
+          <div>
+            <h2 className="accent">What I Do.</h2>
+            <h3 className="lead">Four crafts. The surface has to feel inevitable.</h3>
             {SERVICES.map((s) => (
               <article className="svc" key={s.title}>
-                <div><h3>{s.title}</h3><p>{s.copy}</p></div>
-                <a className="more" href="#work">Learn More</a>
-                <span className="ico" aria-hidden="true">\u2197</span>
+                <div>
+                  <h3>{s.title}</h3>
+                  <p>{s.copy}</p>
+                </div>
+                <div className="svc-side">
+                  <a className="btn btn-sq" href="#work" aria-label={`See ${s.title} work`}>
+                    ↗
+                  </a>
+                  <a className="linkg" href="#work" style={{ fontSize: 14 }}>
+                    Learn More
+                  </a>
+                </div>
               </article>
             ))}
           </div>
+          <div className="svc-art" aria-hidden="true" />
         </div>
       </section>
-      <section id="work" className="section" style={{ justifyContent: "center" }}>
-        <div className="stack wide" style={{ width: "min(1040px, 100%)", maxWidth: 1040 }}>
-          <div className="works-head">
-            <div>
-              <p className="h-section">MY LATEST</p>
-              <h2 className="h-lead" style={{ marginBottom: 8 }}>WORKS.</h2>
-              <p className="muted">Screenshots of the live deploys. Click a card to open it.</p>
-            </div>
-          </div>
-          <div className="grid">
-            {WORKS.map((w) => (
-              <a className="card" key={w.title} href={w.href} target="_blank" rel="noreferrer" style={{ padding: 0, minHeight: 0, justifyContent: "flex-start" }}>
-                <div style={{ height: 210, overflow: "hidden", background: "#0e061c", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                  <img src={w.shot} alt={`${w.title} preview`} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }} />
-                </div>
-                <div style={{ padding: "16px 18px 18px" }}>
-                  <span className="tag">{w.tag}</span>
-                  <h3>{w.title}</h3>
-                  <p>{w.copy}</p>
-                </div>
+
+      <section id="work" className="block">
+        <div className="wrap work-grid">
+          <div className="work-col">
+            <div className="intro">
+              <h2 className="accent">
+                My Latest
+                <br />
+                Works.
+              </h2>
+              <p>Live sites only. Hover a frame, then open it.</p>
+              <a className="btn btn-sm" href="#contact">
+                View all Projects
               </a>
-            ))}
+            </div>
+            <Tile w={spv} />
+            <Tile w={see} />
+          </div>
+          <div className="work-col" style={{ paddingTop: 12 }}>
+            <Tile w={kobo} />
+            <Tile w={cx} />
           </div>
         </div>
       </section>
-      <section id="contact" className="section right">
-        <div className="stack">
-          <p className="kicker">GET IN TOUCH</p>
-          <h2 className="display" style={{ fontSize: "clamp(36px, 6vw, 72px)" }}>Let's work<br />Together!</h2>
-          <form className="contact-box" onSubmit={submit}>
-            <input required placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-            <textarea required placeholder="What should we build?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-            <button className="pill" type="submit" style={{ justifySelf: "start" }}>{sent ? "Opening mail\u2026" : "Send Message"}</button>
+
+      <section id="contact" className="block">
+        <div className="wrap contact-grid">
+          <div>
+            <p className="accent" style={{ fontSize: 18, letterSpacing: "0.2em" }}>
+              Get in touch
+            </p>
+            <h2 className="big">
+              Let's work
+              <br />
+              Together!
+            </h2>
+            <p className="fine">
+              © {year} Hiswill Iroegbulam ·{" "}
+              <a href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            </p>
+          </div>
+          <form className="form" onSubmit={submit}>
+            <input required placeholder="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <input required type="email" placeholder="Your email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            <textarea required placeholder="Your message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+            <button className="btn btn-lg" type="submit">
+              {sent ? "Opening mail…" : "Send Message"}
+            </button>
           </form>
-          <p className="muted" style={{ marginTop: 28, fontSize: 14 }}>
-            \u00a9 {year} Hiswill Iroegbulam \u00b7 <a href="https://github.com/Hiswill46" target="_blank" rel="noreferrer">GitHub</a> \u00b7 <a href="https://x.com/iroegbulam_e" target="_blank" rel="noreferrer">X</a>
-          </p>
         </div>
       </section>
+
       <nav className="dock" aria-label="Primary">
-        {[["home", "home"], ["about", "user"], ["work", "work"], ["services", "mail"], ["contact", "chat"]].map(([id, icon]) => (
-          <button key={id} className={section === id ? "active" : ""} onClick={() => go(id)} aria-label={id}>
+        {(
+          [
+            ["home", "home"],
+            ["about", "user"],
+            ["services", "mail"],
+            ["work", "work"],
+            ["contact", "chat"],
+          ]
+        ).map(([id, icon]) => (
+          <button key={id} className={section === id ? "active" : ""} onClick={() => go(id)} aria-label={id} type="button">
             <Icon name={icon} />
           </button>
         ))}

@@ -181,7 +181,7 @@ export default function App() {
                 </span>
               </div>
               <div className="stat">
-                <b>200+</b>
+                <b>100</b>
                 <span>
                   Projects
                   <br />
@@ -189,7 +189,7 @@ export default function App() {
                 </span>
               </div>
               <div className="stat">
-                <b>13k+</b>
+                <b>50</b>
                 <span>
                   Satisfied
                   <br />

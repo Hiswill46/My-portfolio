@@ -305,7 +305,7 @@ export default function App() {
                   I design the interface and build the product that runs it — which means nothing gets lost translating a mockup into working software.
                 </p>
                 <p>
-                  Based between Port Harcourt and the Gulf. The work is Next.js sites and dashboards for SPV firms, private banks, and the products I run.
+                  I care about interfaces that feel considered: fast, legible, and built to hold up under real use, not just look good in a screenshot.
                 </p>
               </div>
               <div className="stat-row">

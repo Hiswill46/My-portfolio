@@ -21,6 +21,8 @@ const SKILLS = [
   "UI/UX Design",
   "Next.js",
   "React",
+  "Node.js",
+  "Express",
   "TypeScript",
   "Frontend Architecture",
   "Design Systems",
@@ -291,9 +293,9 @@ export default function App() {
               <h1 className="hero-name">
                 I'm Hiswill,
                 <br />
-                <span className="grad">web designer</span>
+                <span className="grad">web designer &</span>
                 <br />
-                & developer.
+                full-stack developer.
               </h1>
               <p className="hero-desc">
                 I turn ideas into clean, working websites and dashboards — from the first sketch to the last line of code. Design and engineering, handled by one person, end to end.

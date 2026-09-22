@@ -11,7 +11,7 @@
   --accent3: #ff6fa5;
   --grad: linear-gradient(120deg, var(--accent1), var(--accent2));
 }
-html { scroll-behavior: smooth; overflow-x: clip; }
+html { overflow-x: clip; }
 body {
   margin: 0;
   background: var(--bg);

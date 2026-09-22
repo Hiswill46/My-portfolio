@@ -72,6 +72,15 @@ function panelTops() {
   });
 }
 
+let cachedTops = null;
+function tops() {
+  if (!cachedTops) cachedTops = panelTops();
+  return cachedTops;
+}
+function clearTops() {
+  cachedTops = null;
+}
+
 export default function App() {
   const [section, setSection] = useState("home");
   const [menu, setMenu] = useState(false);
@@ -93,7 +102,7 @@ export default function App() {
     const ids = NAV.map(([id]) => id);
     function sync() {
       const y = window.scrollY + 2;
-      const list = panelTops();
+      const list = tops();
       let i = 0;
       list.forEach((top, idx) => {
         if (top <= y) i = idx;
@@ -101,12 +110,16 @@ export default function App() {
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));
     }
+    function onResize() {
+      clearTops();
+      sync();
+    }
     sync();
     window.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("resize", sync);
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -156,8 +169,8 @@ export default function App() {
       cancelAnimationFrame(frame);
       const step = (t) => {
         const p = Math.min(1, (t - t0) / dur);
-        const eased = 1 - (1 - p) * (1 - p);
-        window.scrollTo(0, Math.round(start + dist * eased));
+        const eased = 1 - Math.pow(1 - p, 3);
+        window.scrollTo(0, start + dist * eased);
         if (p < 1) frame = requestAnimationFrame(step);
         else window.scrollTo(0, top);
       };
@@ -165,32 +178,52 @@ export default function App() {
     }
     jump.current = animateTo;
 
-    const nodes = () => Array.from(document.querySelectorAll(".panel"));
-    function stack() {
+    const nodes = Array.from(document.querySelectorAll(".panel"));
+    let paint = 0;
+    function draw() {
+      paint = 0;
       if (reduced) return;
-      const tops = panelTops();
+      const list = tops();
       const y = window.scrollY;
-      nodes().forEach((el, i) => {
-        const next = tops[i + 1];
-        const span = next == null ? 1 : Math.max(1, next - tops[i]);
-        const p = next == null ? 0 : Math.min(1, Math.max(0, (y - tops[i]) / span));
-        el.style.setProperty("--p", p.toFixed(3));
-      });
+      for (let i = 0; i < nodes.length; i++) {
+        const next = list[i + 1];
+        const el = nodes[i];
+        if (next == null) {
+          el.style.transform = "";
+          continue;
+        }
+        const span = Math.max(1, next - list[i]);
+        const raw = (y - list[i]) / span;
+        if (raw <= 0 || raw >= 1) {
+          el.style.transform = "";
+          continue;
+        }
+        const scale = 1 - raw * 0.06;
+        el.style.transform = `scale(${scale.toFixed(4)})`;
+      }
     }
-    stack();
-    window.addEventListener("scroll", stack, { passive: true });
-    window.addEventListener("resize", stack);
+    function onScroll() {
+      if (!paint) paint = requestAnimationFrame(draw);
+    }
+    function onResize() {
+      clearTops();
+      onScroll();
+    }
+    draw();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", stack);
-      window.removeEventListener("resize", stack);
+      cancelAnimationFrame(paint);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
   function go(id, event) {
     event?.preventDefault();
     const index = NAV.findIndex(([n]) => n === id);
-    const top = panelTops()[index] ?? 0;
+    const top = tops()[index] ?? 0;
     setSection(id);
     setMenu(false);
     jump.current(top);

@@ -160,7 +160,7 @@ export default function App() {
               I am a <em>{ROLES[role]}</em>
             </p>
             <p className="lede">
-              Freelance front-end work for Gulf corporates and product teams. The sites have to look expensive and behave like software.
+              I design and build Next.js sites and product dashboards for SPV firms, private banks, and the apps I ship — from Dubai to Port Harcourt.
             </p>
             <div className="row">
               <a className="btn btn-lg" href="#contact">

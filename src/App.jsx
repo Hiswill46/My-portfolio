@@ -340,7 +340,7 @@ export default function App() {
                       0
                     </span>
                   </div>
-                  <div className="stat-label">Projects shipped</div>
+                  <div className="stat-label">Projects</div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-num">
@@ -356,7 +356,7 @@ export default function App() {
                       0
                     </span>
                   </div>
-                  <div className="stat-label">Years building</div>
+                  <div className="stat-label">Years</div>
                 </div>
               </div>
             </div>

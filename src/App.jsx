@@ -35,29 +35,29 @@ const SKILLS = [
 const WORKS = [
   {
     title: "SPV Bond",
-    tag: "Corporate · Dubai",
-    copy: "Formation, funding and advisory site for an SPV firm in Downtown Dubai.",
+    tag: "Corporate · Bond platform",
+    tags: ["Web design", "Frontend"],
     href: "https://www.spv-bondproject.com/",
     shot: "/previews/spv.jpg",
   },
   {
     title: "KoboLoop",
     tag: "Savings groups",
-    copy: "A product for rotating savings groups — contributions, cycles, and the people in them.",
+    tags: ["Product", "Fintech"],
     href: "https://koboloop-drizzle.vercel.app/",
     shot: "/previews/koboloop.jpg",
   },
   {
     title: "CX Assets",
     tag: "Private banking",
-    copy: "Investment banking surface for personal, business, and lending.",
+    tags: ["Dashboard", "Data viz"],
     href: "https://www.cx-assets.com/",
     shot: "/previews/cx.jpg",
   },
   {
     title: "SeeCapital",
     tag: "Capital dashboard",
-    copy: "A capital dashboard built to be read quickly, not decorated.",
+    tags: ["Dashboard", "Fintech"],
     href: "https://seecapital.vercel.app/",
     shot: "/previews/see.jpg",
   },
@@ -423,11 +423,23 @@ export default function App() {
                     e.currentTarget.style.transform = "";
                   }}
                 >
-                  <img className="work-shot" src={w.shot} alt="" />
+                  <div className="browser-chrome" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <div className="shot-wrap">
+                    <img className="work-shot" src={w.shot} alt="" />
+                    <div className="shot-scrim" />
+                  </div>
                   <div className="work-body">
                     <div className="work-kicker">{w.tag}</div>
                     <h3>{w.title}</h3>
-                    <p>{w.copy}</p>
+                    <div className="work-tags">
+                      {w.tags.map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
+                    </div>
                   </div>
                 </a>
               ))}

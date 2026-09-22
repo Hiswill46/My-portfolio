@@ -20,7 +20,7 @@ const WORKS = [
   {
     title: "CX Assets",
     tag: "Private banking",
-    href: "https://cxassets.vercel.app/",
+    href: "https://www.cx-assets.com/",
     shot: "/previews/cx.jpg",
     tall: false,
   },

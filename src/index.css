@@ -11,14 +11,16 @@
   --accent3: #ff6fa5;
   --grad: linear-gradient(120deg, var(--accent1), var(--accent2));
 }
-html { overflow-x: clip; }
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: clip;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 ::selection { background: var(--accent1); color: #fff; }
 a { color: inherit; text-decoration: none; }

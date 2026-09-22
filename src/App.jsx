@@ -104,7 +104,7 @@ export default function App() {
           const el = entry.target;
           const target = Number(el.dataset.count || 0);
           const start = performance.now();
-          const tick = (now: number) => {
+          const tick = (now) => {
             const p = Math.min((now - start) / 1100, 1);
             el.textContent = String(Math.floor(p * target));
             if (p < 1) requestAnimationFrame(tick);

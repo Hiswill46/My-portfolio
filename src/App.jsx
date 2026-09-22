@@ -7,28 +7,28 @@ const WORKS = [
     title: "SPV Bond",
     tag: "Corporate · Dubai",
     href: "https://www.spv-bondproject.com/",
-    shot: "https://image.thum.io/get/width/1000/crop/620/https://www.spv-bondproject.com/",
+    shot: "/previews/spv.jpg",
     tall: true,
   },
   {
     title: "KoboLoop",
     tag: "Savings groups",
     href: "https://koboloop-drizzle.vercel.app/",
-    shot: "https://image.thum.io/get/width/1000/crop/620/https://koboloop-drizzle.vercel.app/",
+    shot: "/previews/koboloop.jpg",
     tall: false,
   },
   {
     title: "CX Assets",
     tag: "Private banking",
     href: "https://cxassets.vercel.app/",
-    shot: "https://image.thum.io/get/width/1000/crop/620/https://cxassets.vercel.app/",
+    shot: "/previews/cx.jpg",
     tall: false,
   },
   {
     title: "SeeCapital",
     tag: "Capital dashboard",
     href: "https://seecapital.vercel.app/",
-    shot: "https://image.thum.io/get/width/1000/crop/620/https://seecapital.vercel.app/",
+    shot: "/previews/see.jpg",
     tall: false,
   },
 ];
@@ -124,14 +124,12 @@ export default function App() {
     setSent(true);
   }
 
-  const [spv, kobo, cx, see] = WORKS;
-
   return (
     <div className="site">
       <header className="topbar">
         <div className="wrap inner">
           <a href="#home" onClick={() => go("home")}>
-            <img className="logo" src="https://hiswill.vercel.app/static/media/logo.5ee63ad27c9c8fc5ec9abe0e7e8a9eb8.svg" alt="Hiswill" />
+            <img className="logo" src="/logo.svg" alt="Hiswill" />
           </a>
           <a className="btn btn-sm" href="#contact">
             Work With Me
@@ -140,38 +138,39 @@ export default function App() {
       </header>
 
       <section id="home" className="block">
-        <div className="wrap hero-copy">
-          <h1 className="name">
-            HISWILL
-            <br />
-            IROEGBULAM
-          </h1>
-          <p className="role">
-            I am a <em>{ROLES[role]}</em>
-          </p>
-          <p className="lede">
-            Freelance front-end work for Gulf corporates and product teams. The sites have to look expensive and behave like software.
-          </p>
-          <div className="row">
-            <a className="btn btn-lg" href="#contact">
-              Contact me
-            </a>
-            <a className="linkg" href="#work">
-              My Portfolio
-            </a>
+        <div className="wrap hero">
+          <div className="hero-copy">
+            <h1 className="name">
+              HISWILL
+              <br />
+              IROEGBULAM
+            </h1>
+            <p className="role">
+              I am a <em>{ROLES[role]}</em>
+            </p>
+            <p className="lede">
+              Freelance front-end work for Gulf corporates and product teams. The sites have to look expensive and behave like software.
+            </p>
+            <div className="row">
+              <a className="btn btn-lg" href="#contact">
+                Contact me
+              </a>
+              <a className="linkg" href="#work">
+                My Portfolio
+              </a>
+            </div>
           </div>
+          <img className="me" src="/me.png" alt="Hiswill Iroegbulam" />
         </div>
       </section>
 
       <section id="about" className="block">
-        <div className="wrap about-grid">
-          <div className="portrait" role="img" aria-label="Portrait of Hiswill Iroegbulam" />
-          <div>
-            <h2 className="accent">About Me.</h2>
-            <h3 className="lead">I'm a freelance front-end developer with over 5 years of experience.</h3>
-            <p>
-              Based between Port Harcourt and the Gulf corridor. Next.js brand sites and product dashboards — SPV firms in Downtown Dubai, PMOs in Muscat, private-banking UIs, and full-stack TypeScript apps.
-            </p>
+        <div className="wrap copy">
+          <h2 className="accent">About Me.</h2>
+          <h3 className="lead">I'm a freelance front-end developer with over 5 years of experience.</h3>
+          <p>
+            Based between Port Harcourt and the Gulf corridor. Next.js brand sites and product dashboards — SPV firms in Downtown Dubai, PMOs in Muscat, private-banking UIs, and full-stack TypeScript apps.
+          </p>
             <div className="stats">
               <div className="stat">
                 <b>7</b>
@@ -206,16 +205,14 @@ export default function App() {
                 My Portfolio
               </a>
             </div>
-          </div>
         </div>
       </section>
 
       <section id="services" className="block">
-        <div className="wrap svc-grid">
-          <div>
-            <h2 className="accent">What I Do.</h2>
-            <h3 className="lead">Four crafts. The surface has to feel inevitable.</h3>
-            {SERVICES.map((s) => (
+        <div className="wrap copy">
+          <h2 className="accent">What I Do.</h2>
+          <h3 className="lead">Four crafts. The surface has to feel inevitable.</h3>
+          {SERVICES.map((s) => (
               <article className="svc" key={s.title}>
                 <div>
                   <h3>{s.title}</h3>
@@ -231,31 +228,23 @@ export default function App() {
                 </div>
               </article>
             ))}
-          </div>
-          <div className="svc-art" aria-hidden="true" />
         </div>
       </section>
 
       <section id="work" className="block">
-        <div className="wrap work-grid">
-          <div className="work-col">
-            <div className="intro">
-              <h2 className="accent">
-                My Latest
-                <br />
-                Works.
-              </h2>
-              <p>Live sites only. Hover a frame, then open it.</p>
-              <a className="btn btn-sm" href="#contact">
-                View all Projects
-              </a>
-            </div>
-            <Tile w={spv} />
-            <Tile w={see} />
+        <div className="wrap">
+          <div className="intro">
+            <h2 className="accent">
+              My Latest
+              <br />
+              Works.
+            </h2>
+            <p>Live sites only. Open a frame.</p>
           </div>
-          <div className="work-col" style={{ paddingTop: 12 }}>
-            <Tile w={kobo} />
-            <Tile w={cx} />
+          <div className="works">
+            {WORKS.map((w) => (
+              <Tile key={w.title} w={w} />
+            ))}
           </div>
         </div>
       </section>

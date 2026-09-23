@@ -89,7 +89,7 @@ function clearTops() {
 function lockTop(i) {
   if (i <= 0) return 0;
   const list = tops();
-  return Math.max(0, (list[i] ?? 0) - (68 + i * 18));
+  return Math.max(0, (list[i] ?? 0) - 68);
 }
 
 export default function App() {
@@ -118,7 +118,8 @@ export default function App() {
       const list = tops();
       let i = 0;
       list.forEach((top, idx) => {
-        if (y >= top - (68 + idx * 18)) i = idx;
+        const stick = phone() ? 68 : 68 + idx * 18;
+        if (y >= top - stick) i = idx;
       });
       if (i !== current) {
         current = i;
@@ -198,15 +199,9 @@ export default function App() {
     const nodes = Array.from(document.querySelectorAll(".panel"));
     const phone = () => window.matchMedia("(max-width: 640px)").matches;
     let paint = 0;
-    let held = null;
     function draw() {
       paint = 0;
-      if (reduced || phone()) {
-        nodes.forEach((el) => {
-          if (el !== held) el.style.transform = "";
-        });
-        return;
-      }
+      if (reduced || phone()) return;
       const list = tops();
       const y = window.scrollY;
       for (let i = 0; i < nodes.length; i++) {
@@ -230,55 +225,6 @@ export default function App() {
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
     }
-    let drag = null;
-    function frontIndex() {
-      const list = tops();
-      const y = window.scrollY + 2;
-      let i = 0;
-      list.forEach((top, idx) => {
-        if (y >= top - (68 + idx * 18)) i = idx;
-      });
-      return i;
-    }
-    function park(dest) {
-      const y = window.scrollY;
-      document.documentElement.style.overflow = "hidden";
-      window.scrollTo(0, y);
-      document.documentElement.style.overflow = "";
-      animateTo(dest);
-      window.setTimeout(() => {
-        if (!drag && Math.abs(window.scrollY - dest) > 2) window.scrollTo(0, dest);
-      }, 540);
-    }
-    function onTouchStart(e) {
-      if (!phone()) return;
-      cancelAnimationFrame(frame);
-      drag = { y: e.touches[0]?.clientY ?? 0, index: frontIndex() };
-      const point = e.touches[0];
-      if (!point) return;
-      const card = document.elementFromPoint(point.clientX, point.clientY)?.closest(".panel");
-      if (!(card instanceof HTMLElement)) return;
-      held = card;
-      const r = card.getBoundingClientRect();
-      card.style.transformOrigin = `${((point.clientX - r.left) / r.width) * 100}% ${((point.clientY - r.top) / r.height) * 100}%`;
-      card.classList.add("is-held");
-    }
-    function onTouchEnd(e) {
-      held?.classList.remove("is-held");
-      if (held) held.style.transformOrigin = "";
-      held = null;
-      if (!phone() || !drag) return;
-      const start = drag;
-      drag = null;
-      const endY = e.changedTouches[0]?.clientY ?? start.y;
-      const moved = start.y - endY;
-      const list = tops();
-      let next = start.index;
-      if (moved > 64) next = Math.min(list.length - 1, start.index + 1);
-      else if (moved < -64) next = Math.max(0, start.index - 1);
-      else if (Math.abs(window.scrollY - lockTop(start.index)) < 2) return;
-      park(lockTop(next));
-    }
     function onResize() {
       clearTops();
       onScroll();
@@ -286,17 +232,11 @@ export default function App() {
     draw();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(paint);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("touchcancel", onTouchEnd);
     };
   }, []);
 

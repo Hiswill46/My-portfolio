@@ -200,8 +200,10 @@ export default function App() {
           el.style.transform = "";
           continue;
         }
-        const scale = 1 - raw * 0.06;
-        el.style.transform = `scale(${scale.toFixed(4)})`;
+        const t = raw * raw * (3 - 2 * raw);
+        const scale = 1 - t * 0.08;
+        const sink = t * 22;
+        el.style.transform = `translateY(${sink.toFixed(2)}px) scale(${scale.toFixed(4)})`;
       }
     }
     function onScroll() {

@@ -176,7 +176,8 @@ main { padding-top: 68px; }
 .panel {
   position: sticky;
   top: calc(68px + var(--i, 0) * 18px);
-  height: calc(100dvh - 68px - var(--i, 0) * 18px);
+  height: calc(100vh - 68px - var(--i, 0) * 18px);
+  height: calc(100svh - 68px - var(--i, 0) * 18px);
   min-height: 0;
   width: 100%;
   display: flex;
@@ -517,16 +518,15 @@ main { padding-top: 68px; }
 }
 
 @media (max-width: 640px) {
-  html {
+  html, body {
     scroll-snap-type: y mandatory;
     overscroll-behavior-y: none;
+    touch-action: pan-y;
   }
-  body { overscroll-behavior-y: none; }
   .panel {
     align-items: flex-start;
     padding: 18px 36px 22px;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
     scroll-margin-top: calc(68px + var(--i, 0) * 18px);
   }
   .topbar { padding-left: 28px; padding-right: 28px; }

@@ -105,6 +105,8 @@ export default function App() {
 
   useEffect(() => {
     const ids = NAV.map(([id]) => id);
+    let current = 0;
+    const phone = () => window.matchMedia("(max-width: 640px)").matches;
     function sync() {
       const y = window.scrollY + 2;
       const list = tops();
@@ -112,6 +114,10 @@ export default function App() {
       list.forEach((top, idx) => {
         if (y >= top - (68 + idx * 18)) i = idx;
       });
+      if (i !== current) {
+        current = i;
+        if (phone() && typeof navigator.vibrate === "function") navigator.vibrate(12);
+      }
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));
     }
@@ -184,10 +190,17 @@ export default function App() {
     jump.current = animateTo;
 
     const nodes = Array.from(document.querySelectorAll(".panel"));
+    const phone = () => window.matchMedia("(max-width: 640px)").matches;
     let paint = 0;
+    let held: HTMLElement | null = null;
     function draw() {
       paint = 0;
-      if (reduced) return;
+      if (reduced || phone()) {
+        nodes.forEach((el) => {
+          if (el !== held) el.style.transform = "";
+        });
+        return;
+      }
       const list = tops();
       const y = window.scrollY;
       for (let i = 0; i < nodes.length; i++) {
@@ -211,6 +224,22 @@ export default function App() {
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
     }
+    function onTouchStart(e) {
+      if (!phone()) return;
+      const point = e.touches[0];
+      if (!point) return;
+      const card = document.elementFromPoint(point.clientX, point.clientY)?.closest(".panel");
+      if (!(card instanceof HTMLElement)) return;
+      held = card;
+      const r = card.getBoundingClientRect();
+      card.style.transformOrigin = `${((point.clientX - r.left) / r.width) * 100}% ${((point.clientY - r.top) / r.height) * 100}%`;
+      card.classList.add("is-held");
+    }
+    function onTouchEnd() {
+      held?.classList.remove("is-held");
+      if (held) held.style.transformOrigin = "";
+      held = null;
+    }
     function onResize() {
       clearTops();
       onScroll();
@@ -218,11 +247,17 @@ export default function App() {
     draw();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(paint);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
     };
   }, []);
 

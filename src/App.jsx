@@ -209,10 +209,16 @@ export default function App() {
   function go(id, event) {
     event?.preventDefault();
     const index = NAV.findIndex(([n]) => n === id);
-    const top = window.matchMedia("(max-width: 640px)").matches ? lockTop(index) : (tops()[index] ?? 0);
+    const top = lockTop(index);
     setSection(id);
     setMenu(false);
-    jump.current(top);
+    const root = document.documentElement;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    root.style.scrollSnapType = "none";
+    window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+    window.setTimeout(() => {
+      root.style.scrollSnapType = "";
+    }, 700);
   }
 
   function tilt(e) {

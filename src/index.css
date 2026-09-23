@@ -517,13 +517,20 @@ main { padding-top: 68px; }
 }
 
 @media (max-width: 640px) {
-  html, body { overscroll-behavior-y: none; }
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 68px;
+    overscroll-behavior-y: none;
+  }
+  body { overscroll-behavior-y: none; }
   .panel {
+    top: 68px;
+    height: calc(100dvh - 68px);
     align-items: flex-start;
     padding: 18px 36px 22px;
-    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
-  .panel.is-held { transform: scale(0.975); }
   .topbar { padding-left: 28px; padding-right: 28px; }
   .nav-links.open { right: 28px; }
   .panel-inner { margin-block: auto; }

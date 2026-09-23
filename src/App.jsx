@@ -66,11 +66,8 @@ const WORKS = [
 ];
 
 function panelTops() {
-  const panels = Array.from(document.querySelectorAll(".panel"));
-  const main = panels[0]?.parentElement;
-  const start = main ? parseFloat(getComputedStyle(main).paddingTop) || 0 : 0;
-  let y = start;
-  return panels.map((el) => {
+  let y = 0;
+  return Array.from(document.querySelectorAll(".panel"), (el) => {
     const top = y;
     y += el.offsetHeight;
     return top;
@@ -106,17 +103,17 @@ export default function App() {
   useEffect(() => {
     const ids = NAV.map(([id]) => id);
     let current = 0;
-    const phone = () => window.matchMedia("(max-width: 640px)").matches;
     function sync() {
-      const y = window.scrollY + 2;
       const list = tops();
-      let i = 0;
-      list.forEach((top, idx) => {
-        if (y >= top - (68 + idx * 18)) i = idx;
-      });
+      const h = Math.max(1, (list[1] ?? window.innerHeight) - (list[0] ?? 0));
+      let i = Math.round((window.scrollY + 2) / h);
+      if (i < 0) i = 0;
+      if (i > list.length - 1) i = list.length - 1;
       if (i !== current) {
         current = i;
-        if (phone() && typeof navigator.vibrate === "function") navigator.vibrate(12);
+        const card = document.getElementById(ids[i] ?? "");
+        card?.classList.remove("land");
+        requestAnimationFrame(() => card?.classList.add("land"));
       }
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));
@@ -224,7 +221,9 @@ export default function App() {
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
     }
+    let touchY = 0;
     function onTouchStart(e) {
+      touchY = e.touches[0]?.clientY ?? 0;
       if (!phone()) return;
       const point = e.touches[0];
       if (!point) return;
@@ -235,7 +234,9 @@ export default function App() {
       card.style.transformOrigin = `${((point.clientX - r.left) / r.width) * 100}% ${((point.clientY - r.top) / r.height) * 100}%`;
       card.classList.add("is-held");
     }
-    function onTouchEnd() {
+    function onTouchEnd(e) {
+      const endY = e.changedTouches[0]?.clientY ?? touchY;
+      if (Math.abs(endY - touchY) > 36 && typeof navigator.vibrate === "function") navigator.vibrate(15);
       held?.classList.remove("is-held");
       if (held) held.style.transformOrigin = "";
       held = null;

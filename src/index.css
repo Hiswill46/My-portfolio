@@ -176,7 +176,8 @@ main { padding-top: 68px; }
 .panel {
   position: sticky;
   top: calc(68px + var(--i, 0) * 18px);
-  height: calc(100dvh - 68px - var(--i, 0) * 18px + 2px);
+  height: calc(100vh - 68px - var(--i, 0) * 18px + 2px);
+  height: calc(100lvh - 68px - var(--i, 0) * 18px + 2px);
   min-height: 0;
   width: 100%;
   display: flex;

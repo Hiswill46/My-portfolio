@@ -66,8 +66,11 @@ const WORKS = [
 ];
 
 function panelTops() {
-  let y = 0;
-  return Array.from(document.querySelectorAll(".panel"), (el) => {
+  const panels = Array.from(document.querySelectorAll(".panel"));
+  const main = panels[0]?.parentElement;
+  const start = main ? parseFloat(getComputedStyle(main).paddingTop) || 0 : 0;
+  let y = start;
+  return panels.map((el) => {
     const top = y;
     y += el.offsetHeight;
     return top;
@@ -102,24 +105,18 @@ export default function App() {
 
   useEffect(() => {
     const ids = NAV.map(([id]) => id);
-    let current = -1;
+    let current = 0;
+    const phone = () => window.matchMedia("(max-width: 640px)").matches;
     function sync() {
+      const y = window.scrollY + 2;
       const list = tops();
-      const h = Math.max(1, (list[1] ?? window.innerHeight) - (list[0] ?? 0));
-      let i = Math.round((window.scrollY + 2) / h);
-      if (i < 0) i = 0;
-      if (i > list.length - 1) i = list.length - 1;
+      let i = 0;
+      list.forEach((top, idx) => {
+        if (y >= top - (68 + idx * 18)) i = idx;
+      });
       if (i !== current) {
-        const first = current < 0;
         current = i;
-        const card = document.getElementById(ids[i] ?? "");
-        if (!first) {
-          card?.classList.remove("land");
-          requestAnimationFrame(() => card?.classList.add("land"));
-          if (window.matchMedia("(max-width: 640px)").matches && typeof navigator.vibrate === "function") {
-            navigator.vibrate(12);
-          }
-        }
+        if (phone() && typeof navigator.vibrate === "function") navigator.vibrate(12);
       }
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));
@@ -192,37 +189,6 @@ export default function App() {
     }
     jump.current = animateTo;
 
-    let busy = false;
-    let armed = false;
-    let finger = false;
-    let origin = 0;
-    let quiet = 0;
-    function arm() {
-      if (busy || armed) return;
-      armed = true;
-      origin = window.scrollY;
-    }
-    function settle() {
-      if (busy || !armed || finger) return;
-      armed = false;
-      const list = tops();
-      const h = Math.max(1, (list[1] ?? window.innerHeight) - (list[0] ?? 0));
-      const y = window.scrollY;
-      let next = Math.round(origin / h);
-      const delta = y - origin;
-      if (delta > h * 0.18) next += 1;
-      else if (delta < -h * 0.18) next -= 1;
-      if (next < 0) next = 0;
-      if (next > list.length - 1) next = list.length - 1;
-      const dest = next * h;
-      if (Math.abs(y - dest) < 3) return;
-      busy = true;
-      animateTo(dest);
-      window.setTimeout(() => {
-        busy = false;
-      }, 580);
-    }
-
     const nodes = Array.from(document.querySelectorAll(".panel"));
     const phone = () => window.matchMedia("(max-width: 640px)").matches;
     let paint = 0;
@@ -257,12 +223,8 @@ export default function App() {
     }
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
-      if (busy || finger || phone()) return;
-      window.clearTimeout(quiet);
-      quiet = window.setTimeout(settle, 140);
     }
     function onTouchStart(e) {
-      finger = true;
       if (!phone()) return;
       const point = e.touches[0];
       if (!point) return;
@@ -277,7 +239,6 @@ export default function App() {
       held?.classList.remove("is-held");
       if (held) held.style.transformOrigin = "";
       held = null;
-      finger = false;
     }
     function onResize() {
       clearTops();
@@ -286,17 +247,14 @@ export default function App() {
     draw();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    window.addEventListener("wheel", arm, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(paint);
-      window.clearTimeout(quiet);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("wheel", arm);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);

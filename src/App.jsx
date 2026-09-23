@@ -86,6 +86,12 @@ function clearTops() {
   cachedTops = null;
 }
 
+function lockTop(i) {
+  if (i <= 0) return 0;
+  const list = tops();
+  return Math.max(0, (list[i] ?? 0) - (68 + i * 18));
+}
+
 export default function App() {
   const [section, setSection] = useState("home");
   const [menu, setMenu] = useState(false);
@@ -224,8 +230,30 @@ export default function App() {
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
     }
+    let drag = null;
+    function frontIndex() {
+      const list = tops();
+      const y = window.scrollY + 2;
+      let i = 0;
+      list.forEach((top, idx) => {
+        if (y >= top - (68 + idx * 18)) i = idx;
+      });
+      return i;
+    }
+    function park(dest) {
+      const y = window.scrollY;
+      document.documentElement.style.overflow = "hidden";
+      window.scrollTo(0, y);
+      document.documentElement.style.overflow = "";
+      animateTo(dest);
+      window.setTimeout(() => {
+        if (!drag && Math.abs(window.scrollY - dest) > 2) window.scrollTo(0, dest);
+      }, 540);
+    }
     function onTouchStart(e) {
       if (!phone()) return;
+      cancelAnimationFrame(frame);
+      drag = { y: e.touches[0]?.clientY ?? 0, index: frontIndex() };
       const point = e.touches[0];
       if (!point) return;
       const card = document.elementFromPoint(point.clientX, point.clientY)?.closest(".panel");
@@ -235,10 +263,21 @@ export default function App() {
       card.style.transformOrigin = `${((point.clientX - r.left) / r.width) * 100}% ${((point.clientY - r.top) / r.height) * 100}%`;
       card.classList.add("is-held");
     }
-    function onTouchEnd() {
+    function onTouchEnd(e) {
       held?.classList.remove("is-held");
       if (held) held.style.transformOrigin = "";
       held = null;
+      if (!phone() || !drag) return;
+      const start = drag;
+      drag = null;
+      const endY = e.changedTouches[0]?.clientY ?? start.y;
+      const moved = start.y - endY;
+      const list = tops();
+      let next = start.index;
+      if (moved > 64) next = Math.min(list.length - 1, start.index + 1);
+      else if (moved < -64) next = Math.max(0, start.index - 1);
+      else if (Math.abs(window.scrollY - lockTop(start.index)) < 2) return;
+      park(lockTop(next));
     }
     function onResize() {
       clearTops();
@@ -264,7 +303,7 @@ export default function App() {
   function go(id, event) {
     event?.preventDefault();
     const index = NAV.findIndex(([n]) => n === id);
-    const top = tops()[index] ?? 0;
+    const top = window.matchMedia("(max-width: 640px)").matches ? lockTop(index) : (tops()[index] ?? 0);
     setSection(id);
     setMenu(false);
     jump.current(top);

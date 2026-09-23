@@ -176,7 +176,7 @@ main { padding-top: 68px; }
 .panel {
   position: sticky;
   top: calc(68px + var(--i, 0) * 18px);
-  height: calc(100dvh - 68px);
+  height: calc(100dvh - 68px - var(--i, 0) * 18px);
   min-height: 0;
   width: 100%;
   display: flex;
@@ -519,7 +519,6 @@ main { padding-top: 68px; }
 @media (max-width: 640px) {
   html {
     scroll-snap-type: y mandatory;
-    scroll-padding-top: 68px;
     overscroll-behavior-y: none;
   }
   body { overscroll-behavior-y: none; }
@@ -528,6 +527,7 @@ main { padding-top: 68px; }
     padding: 18px 36px 22px;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    scroll-margin-top: calc(68px + var(--i, 0) * 18px);
   }
   .topbar { padding-left: 28px; padding-right: 28px; }
   .nav-links.open { right: 28px; }

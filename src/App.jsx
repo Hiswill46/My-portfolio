@@ -66,8 +66,11 @@ const WORKS = [
 ];
 
 function panelTops() {
-  let y = 0;
-  return Array.from(document.querySelectorAll(".panel"), (el) => {
+  const panels = Array.from(document.querySelectorAll(".panel"));
+  const main = panels[0]?.parentElement;
+  const start = main ? parseFloat(getComputedStyle(main).paddingTop) || 0 : 0;
+  let y = start;
+  return panels.map((el) => {
     const top = y;
     y += el.offsetHeight;
     return top;
@@ -107,7 +110,7 @@ export default function App() {
       const list = tops();
       let i = 0;
       list.forEach((top, idx) => {
-        if (top <= y) i = idx;
+        if (y >= top - (68 + idx * 18)) i = idx;
       });
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));
@@ -201,9 +204,8 @@ export default function App() {
           continue;
         }
         const t = raw * raw * (3 - 2 * raw);
-        const scale = 1 - t * 0.08;
-        const sink = t * 22;
-        el.style.transform = `translateY(${sink.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+        const scale = 1 - t * 0.05;
+        el.style.transform = `scale(${scale.toFixed(4)})`;
       }
     }
     function onScroll() {
@@ -284,7 +286,7 @@ export default function App() {
       </div>
 
       <main>
-        <section className="panel" id="home">
+        <section className="panel" id="home" style={{ "--i": 0 }}>
           <div className="orb" />
           <div className="panel-inner hero-grid">
             <div>
@@ -331,7 +333,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="panel" id="about">
+        <section className="panel" id="about" style={{ "--i": 1 }}>
           <div className="orb" />
           <div className="panel-inner about-grid">
             <div>
@@ -398,7 +400,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="panel" id="skills">
+        <section className="panel" id="skills" style={{ "--i": 2 }}>
           <div className="orb" />
           <div className="panel-inner">
             <div className="skills-head">
@@ -415,7 +417,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="panel" id="work">
+        <section className="panel" id="work" style={{ "--i": 3 }}>
           <div className="orb" />
           <div className="panel-inner">
             <div className="work-head">
@@ -459,7 +461,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="panel" id="contact">
+        <section className="panel" id="contact" style={{ "--i": 4 }}>
           <div className="panel-inner contact-inner">
             <div className="section-tag">Contact</div>
             <h2>

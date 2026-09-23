@@ -102,7 +102,7 @@ export default function App() {
 
   useEffect(() => {
     const ids = NAV.map(([id]) => id);
-    let current = 0;
+    let current = -1;
     function sync() {
       const list = tops();
       const h = Math.max(1, (list[1] ?? window.innerHeight) - (list[0] ?? 0));
@@ -110,10 +110,16 @@ export default function App() {
       if (i < 0) i = 0;
       if (i > list.length - 1) i = list.length - 1;
       if (i !== current) {
+        const first = current < 0;
         current = i;
         const card = document.getElementById(ids[i] ?? "");
-        card?.classList.remove("land");
-        requestAnimationFrame(() => card?.classList.add("land"));
+        if (!first) {
+          card?.classList.remove("land");
+          requestAnimationFrame(() => card?.classList.add("land"));
+          if (window.matchMedia("(max-width: 640px)").matches && typeof navigator.vibrate === "function") {
+            navigator.vibrate(12);
+          }
+        }
       }
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));
@@ -251,15 +257,12 @@ export default function App() {
     }
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
-      if (busy || finger) return;
+      if (busy || finger || phone()) return;
       window.clearTimeout(quiet);
       quiet = window.setTimeout(settle, 140);
     }
-    let touchY = 0;
     function onTouchStart(e) {
       finger = true;
-      arm();
-      touchY = e.touches[0]?.clientY ?? 0;
       if (!phone()) return;
       const point = e.touches[0];
       if (!point) return;
@@ -270,18 +273,11 @@ export default function App() {
       card.style.transformOrigin = `${((point.clientX - r.left) / r.width) * 100}% ${((point.clientY - r.top) / r.height) * 100}%`;
       card.classList.add("is-held");
     }
-    function onTouchEnd(e) {
-      const endY = e.changedTouches[0]?.clientY ?? touchY;
-      if (Math.abs(endY - touchY) > 36 && typeof navigator.vibrate === "function") navigator.vibrate(15);
+    function onTouchEnd() {
       held?.classList.remove("is-held");
       if (held) held.style.transformOrigin = "";
       held = null;
       finger = false;
-      const y = window.scrollY;
-      document.documentElement.style.overflow = "hidden";
-      window.scrollTo(0, y);
-      document.documentElement.style.overflow = "";
-      settle();
     }
     function onResize() {
       clearTops();

@@ -524,8 +524,6 @@ main { padding-top: 68px; }
   }
   body { overscroll-behavior-y: none; }
   .panel {
-    top: 68px;
-    height: calc(100dvh - 68px);
     align-items: flex-start;
     padding: 18px 36px 22px;
     scroll-snap-align: start;

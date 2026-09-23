@@ -186,6 +186,37 @@ export default function App() {
     }
     jump.current = animateTo;
 
+    let busy = false;
+    let armed = false;
+    let finger = false;
+    let origin = 0;
+    let quiet = 0;
+    function arm() {
+      if (busy || armed) return;
+      armed = true;
+      origin = window.scrollY;
+    }
+    function settle() {
+      if (busy || !armed || finger) return;
+      armed = false;
+      const list = tops();
+      const h = Math.max(1, (list[1] ?? window.innerHeight) - (list[0] ?? 0));
+      const y = window.scrollY;
+      let next = Math.round(origin / h);
+      const delta = y - origin;
+      if (delta > h * 0.18) next += 1;
+      else if (delta < -h * 0.18) next -= 1;
+      if (next < 0) next = 0;
+      if (next > list.length - 1) next = list.length - 1;
+      const dest = next * h;
+      if (Math.abs(y - dest) < 3) return;
+      busy = true;
+      animateTo(dest);
+      window.setTimeout(() => {
+        busy = false;
+      }, 580);
+    }
+
     const nodes = Array.from(document.querySelectorAll(".panel"));
     const phone = () => window.matchMedia("(max-width: 640px)").matches;
     let paint = 0;
@@ -220,9 +251,14 @@ export default function App() {
     }
     function onScroll() {
       if (!paint) paint = requestAnimationFrame(draw);
+      if (busy || finger) return;
+      window.clearTimeout(quiet);
+      quiet = window.setTimeout(settle, 140);
     }
     let touchY = 0;
     function onTouchStart(e) {
+      finger = true;
+      arm();
       touchY = e.touches[0]?.clientY ?? 0;
       if (!phone()) return;
       const point = e.touches[0];
@@ -240,6 +276,12 @@ export default function App() {
       held?.classList.remove("is-held");
       if (held) held.style.transformOrigin = "";
       held = null;
+      finger = false;
+      const y = window.scrollY;
+      document.documentElement.style.overflow = "hidden";
+      window.scrollTo(0, y);
+      document.documentElement.style.overflow = "";
+      settle();
     }
     function onResize() {
       clearTops();
@@ -248,14 +290,17 @@ export default function App() {
     draw();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("wheel", arm, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(paint);
+      window.clearTimeout(quiet);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("wheel", arm);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);

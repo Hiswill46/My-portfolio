@@ -517,14 +517,9 @@ main { padding-top: 68px; }
 }
 
 @media (max-width: 640px) {
-  html {
-    scroll-snap-type: y mandatory;
-  }
   .panel {
     align-items: flex-start;
     padding: 18px 36px 22px;
-    scroll-snap-align: start;
-    scroll-margin-top: calc(68px + var(--i, 0) * 18px);
   }
   .topbar { padding-left: 28px; padding-right: 28px; }
   .nav-links.open { right: 28px; }

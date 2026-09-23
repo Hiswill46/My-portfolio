@@ -182,7 +182,7 @@ main { padding-top: 68px; }
   width: 100%;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: clip;
   padding: 28px clamp(20px, 5vw, 72px) 36px;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 22px 22px 0 0;
@@ -518,10 +518,8 @@ main { padding-top: 68px; }
 }
 
 @media (max-width: 640px) {
-  html, body {
+  html {
     scroll-snap-type: y mandatory;
-    overscroll-behavior-y: none;
-    touch-action: pan-y;
   }
   .panel {
     align-items: flex-start;

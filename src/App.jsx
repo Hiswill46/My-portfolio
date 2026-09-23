@@ -112,7 +112,6 @@ export default function App() {
   useEffect(() => {
     const ids = NAV.map(([id]) => id);
     let current = 0;
-    const phone = () => window.matchMedia("(max-width: 640px)").matches;
     function sync() {
       const y = window.scrollY + 2;
       const list = tops();
@@ -123,7 +122,6 @@ export default function App() {
       });
       if (i !== current) {
         current = i;
-        if (phone() && typeof navigator.vibrate === "function") navigator.vibrate(12);
       }
       const id = ids[i] ?? "home";
       setSection((cur) => (cur === id ? cur : id));

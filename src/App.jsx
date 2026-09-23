@@ -194,13 +194,39 @@ export default function App() {
     }
     jump.current = animateTo;
 
+    let originY = 0;
+    let originIndex = 0;
+    const phone = () => window.matchMedia("(max-width: 640px)").matches;
+    function indexAt(y) {
+      const list = tops();
+      let i = 0;
+      list.forEach((top, idx) => {
+        if (y + 2 >= top - (68 + idx * 18)) i = idx;
+      });
+      return i;
+    }
+    function onTouchStart(e) {
+      if (!phone()) return;
+      originY = e.touches[0]?.clientY ?? 0;
+      originIndex = indexAt(window.scrollY);
+    }
+    function onTouchEnd(e) {
+      if (!phone()) return;
+      const endY = e.changedTouches[0]?.clientY ?? originY;
+      if (endY - originY < 72) return;
+      animateTo(lockTop(Math.max(0, originIndex - 1)));
+    }
     function onResize() {
       clearTops();
     }
     window.addEventListener("resize", onResize);
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
     };
   }, []);
 

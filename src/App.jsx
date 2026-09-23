@@ -196,46 +196,12 @@ export default function App() {
     }
     jump.current = animateTo;
 
-    const nodes = Array.from(document.querySelectorAll(".panel"));
-    let paint = 0;
-    function draw() {
-      paint = 0;
-      if (reduced) return;
-      const list = tops();
-      const y = window.scrollY;
-      for (let i = 0; i < nodes.length; i++) {
-        const next = list[i + 1];
-        const el = nodes[i];
-        if (next == null) {
-          if (el.style.transform) el.style.transform = "";
-          continue;
-        }
-        const span = Math.max(1, next - list[i]);
-        const raw = (y - list[i]) / span;
-        if (raw <= 0 || raw >= 1) {
-          if (el.style.transform) el.style.transform = "";
-          continue;
-        }
-        const t = raw * raw * (3 - 2 * raw);
-        const scale = (1 - t * 0.08).toFixed(4);
-        const nextTransform = `scale(${scale})`;
-        if (el.style.transform !== nextTransform) el.style.transform = nextTransform;
-      }
-    }
-    function onScroll() {
-      if (!paint) paint = requestAnimationFrame(draw);
-    }
     function onResize() {
       clearTops();
-      onScroll();
     }
-    draw();
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(frame);
-      cancelAnimationFrame(paint);
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };
   }, []);

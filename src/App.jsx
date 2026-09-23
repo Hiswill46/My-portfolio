@@ -198,7 +198,7 @@ export default function App() {
     const nodes = Array.from(document.querySelectorAll(".panel"));
     const phone = () => window.matchMedia("(max-width: 640px)").matches;
     let paint = 0;
-    let held: HTMLElement | null = null;
+    let held = null;
     function draw() {
       paint = 0;
       if (reduced || phone()) {

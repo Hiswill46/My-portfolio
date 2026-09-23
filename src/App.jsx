@@ -89,7 +89,7 @@ function clearTops() {
 function lockTop(i) {
   if (i <= 0) return 0;
   const list = tops();
-  return Math.max(0, (list[i] ?? 0) - 68);
+  return Math.max(0, (list[i] ?? 0) - (68 + i * 18));
 }
 
 export default function App() {
@@ -118,7 +118,7 @@ export default function App() {
       const list = tops();
       let i = 0;
       list.forEach((top, idx) => {
-        const stick = phone() ? 68 : 68 + idx * 18;
+        const stick = 68 + idx * 18;
         if (y >= top - stick) i = idx;
       });
       if (i !== current) {
@@ -197,29 +197,29 @@ export default function App() {
     jump.current = animateTo;
 
     const nodes = Array.from(document.querySelectorAll(".panel"));
-    const phone = () => window.matchMedia("(max-width: 640px)").matches;
     let paint = 0;
     function draw() {
       paint = 0;
-      if (reduced || phone()) return;
+      if (reduced) return;
       const list = tops();
       const y = window.scrollY;
       for (let i = 0; i < nodes.length; i++) {
         const next = list[i + 1];
         const el = nodes[i];
         if (next == null) {
-          el.style.transform = "";
+          if (el.style.transform) el.style.transform = "";
           continue;
         }
         const span = Math.max(1, next - list[i]);
         const raw = (y - list[i]) / span;
         if (raw <= 0 || raw >= 1) {
-          el.style.transform = "";
+          if (el.style.transform) el.style.transform = "";
           continue;
         }
         const t = raw * raw * (3 - 2 * raw);
-        const scale = 1 - t * 0.05;
-        el.style.transform = `scale(${scale.toFixed(4)})`;
+        const scale = (1 - t * 0.08).toFixed(4);
+        const nextTransform = `scale(${scale})`;
+        if (el.style.transform !== nextTransform) el.style.transform = nextTransform;
       }
     }
     function onScroll() {
